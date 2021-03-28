@@ -1,19 +1,19 @@
-﻿using Firebase.Auth;
-using Firebase.Auth.Providers;
-using Firebase.Auth.Repository;
+﻿
 using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Navigation;
+using Prism.Services;
 using ProjectIP.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Xamarin.Forms;
 
 namespace ProjectIP.ViewModels
 {
     public class LoginPageViewModel : ViewModelBase
     {
-        #region props
+        #region Props
         private string _login;
         public string Email
         {
@@ -27,26 +27,34 @@ namespace ProjectIP.ViewModels
             get { return _password; }
             set { SetProperty(ref _password, value); }
         }
-
-        public DelegateCommand LoginCommand { get; set; }
-        public DelegateCommand NavigateToRegisterCommand { get; set; }
-        public IAuthenticationService _authenticationService { get; private set; }
         #endregion
 
-        public LoginPageViewModel(INavigationService navigationService, IAuthenticationService authenticationService) : base(navigationService)
+        #region Commands
+        public DelegateCommand LoginCommand { get; set; }
+        public DelegateCommand NavigateToRegisterCommand { get; set; }
+        #endregion
+
+        #region Services
+        public IAuthenticationService _authenticationService { get; private set; }
+        public IPageDialogService _dialogService { get; private set; }
+        #endregion
+
+        public LoginPageViewModel(INavigationService navigationService, IAuthenticationService authenticationService, IPageDialogService dialogService) : base(navigationService)
         {
             _authenticationService = authenticationService;
+            _dialogService = dialogService;
             LoginCommand = new DelegateCommand(Login);
             Title = "Zaloguj się";
         }
 
         private async void Login()
         {
+            //TODO walidacja
             string token = await _authenticationService.LoginWithEmailAndPassword(Email, Password);
 
-  
             if (String.IsNullOrEmpty(token))
             {
+                await _dialogService.DisplayAlertAsync("Coś poszło nie tak :(", "Podany email lub hasło są nieprawidłowe.", "OK");
                 return;
             }
             //navigate to mainpage

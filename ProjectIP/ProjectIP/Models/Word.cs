@@ -4,7 +4,7 @@ using System.Text;
 
 namespace ProjectIP.Models
 {
-    class Word
+    public class Word
     {
         public string ImageName { get; set; }
         public string ImagePath { get; set; }

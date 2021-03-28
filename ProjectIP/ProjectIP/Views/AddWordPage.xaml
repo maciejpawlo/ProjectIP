@@ -3,6 +3,10 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:prism="http://prismlibrary.com"
              prism:ViewModelLocator.AutowireViewModel="True"
-             x:Class="ProjectIP.Views.AddWordPage">
-  
+             x:Class="ProjectIP.Views.AddWordPage"
+             Title="{Binding Title}">
+    <StackLayout HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand">
+        <Entry Placeholder="Opis zdjęcia"/>
+        <Button Text="Dodaj słowo"/>
+    </StackLayout>
 </ContentPage>

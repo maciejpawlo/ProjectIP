@@ -12,7 +12,16 @@ namespace ProjectIP.iOS.Services
 {
     class FirebaseAuthentication : IAuthenticationService
     {
-        public string GetToken()
+        public async Task<string> GetToken()
+        {
+            if (IsSignedIn())
+            {
+                return await Auth.DefaultInstance.CurrentUser.GetIdTokenAsync();
+            }
+            return string.Empty;
+        }
+
+        public string GetUid()
         {
             if (IsSignedIn())
             {

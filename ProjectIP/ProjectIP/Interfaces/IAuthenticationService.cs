@@ -11,6 +11,7 @@ namespace ProjectIP.Interfaces
         Task<string> SignInWithEmailAndPassword(string email, string password);
         bool SignOut();
         bool IsSignedIn();
-        string GetToken();
+        Task<string> GetToken();
+        string GetUid();
     }
 }

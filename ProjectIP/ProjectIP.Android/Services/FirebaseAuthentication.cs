@@ -1,11 +1,12 @@
 ﻿using Android.App;
 using Android.Content;
+using Android.Gms.Extensions;
 using Android.OS;
 using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 using Firebase.Auth;
-using Firebase.Database;
+using Firebase.Iid;
 using ProjectIP.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -17,11 +18,22 @@ namespace ProjectIP.Droid.Services
 {
     class FirebaseAuthentication : IAuthenticationService
     {
-        public string GetToken()
+        public async Task<string> GetToken()
         {
             if (IsSignedIn())
             {
-                return Firebase.Auth.FirebaseAuth.Instance.CurrentUser.Uid;
+                GetTokenResult tokenRequest = (GetTokenResult) await FirebaseAuth.Instance.CurrentUser.GetIdToken(true);
+                var test = tokenRequest.GetType();
+                return tokenRequest.Token;
+            }
+            return string.Empty;
+        }
+
+        public string GetUid()
+        {
+            if (IsSignedIn())
+            {
+                return FirebaseAuth.Instance.CurrentUser.Uid;
             }
             return string.Empty;
         }
@@ -29,7 +41,7 @@ namespace ProjectIP.Droid.Services
         public bool IsSignedIn()
         {
             var user = Firebase.Auth.FirebaseAuth.Instance.CurrentUser;
-           // var tk = user.GetIdToken(false);
+            
             return user != null;
         }
 
