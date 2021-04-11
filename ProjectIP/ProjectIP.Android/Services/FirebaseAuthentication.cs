@@ -6,7 +6,6 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 using Firebase.Auth;
-using Firebase.Iid;
 using ProjectIP.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -40,7 +39,7 @@ namespace ProjectIP.Droid.Services
 
         public bool IsSignedIn()
         {
-            var user = Firebase.Auth.FirebaseAuth.Instance.CurrentUser;
+            var user = FirebaseAuth.Instance.CurrentUser;
             
             return user != null;
         }
@@ -69,7 +68,7 @@ namespace ProjectIP.Droid.Services
         {
             try
             {
-                var user = await Firebase.Auth.FirebaseAuth.Instance.CreateUserWithEmailAndPasswordAsync(email, password);
+                var user = await FirebaseAuth.Instance.CreateUserWithEmailAndPasswordAsync(email, password);
                 var token = user.User.Uid;
                 return token;
             }

@@ -7,6 +7,7 @@ using ProjectIP.Views;
 using Xamarin.Essentials.Implementation;
 using Xamarin.Essentials.Interfaces;
 using Xamarin.Forms;
+using Acr.UserDialogs;
 
 namespace ProjectIP
 {
@@ -39,6 +40,9 @@ namespace ProjectIP
         {
             containerRegistry.RegisterSingleton<IAppInfo, AppInfoImplementation>();
             containerRegistry.RegisterSingleton<ITextToSpeech, TextToSpeechImplementation>();
+            containerRegistry.RegisterSingleton<IFilePicker, FilePickerImplementation>();
+            containerRegistry.RegisterSingleton<IPermissions, PermissionsImplementation>();
+            containerRegistry.RegisterInstance<IUserDialogs>(UserDialogs.Instance);
 
             containerRegistry.RegisterForNavigation<NavigationPage>();
             containerRegistry.RegisterForNavigation<MainPage, MainPageViewModel>();

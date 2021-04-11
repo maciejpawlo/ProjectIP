@@ -1,4 +1,5 @@
-﻿using Android.App;
+﻿using Acr.UserDialogs;
+using Android.App;
 using Android.Content.PM;
 using Android.OS;
 using Firebase;
@@ -23,6 +24,7 @@ namespace ProjectIP.Droid
             base.OnCreate(savedInstanceState);
             //FirebaseApp.InitializeApp(Application.Context);
             app = FirebaseApp.InitializeApp(Application.Context);
+            UserDialogs.Init(this);
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
             LoadApplication(new App(new AndroidInitializer()));
         }

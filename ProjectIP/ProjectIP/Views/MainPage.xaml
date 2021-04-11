@@ -8,6 +8,7 @@
         <ToolbarItem Text="Dodaj słowo" Priority="0" Order="Primary" Command="{Binding AddWordCommand}"/>
     </ContentPage.ToolbarItems>
     <StackLayout HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand">
+        <Image Source="{Binding Image}"/>
         <Label Text="Welcome to Xamarin Forms and Prism!"/>
         <Button Text="TTS test" Command="{Binding TestTTSCommand}"/>
     </StackLayout>

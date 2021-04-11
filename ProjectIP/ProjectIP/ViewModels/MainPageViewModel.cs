@@ -1,6 +1,7 @@
 ﻿
 using Firebase.Database;
 using Firebase.Database.Query;
+using Firebase.Storage;
 using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Navigation;
@@ -12,6 +13,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Essentials.Interfaces;
+using Xamarin.Forms;
 
 namespace ProjectIP.ViewModels
 {
@@ -28,6 +30,13 @@ namespace ProjectIP.ViewModels
         public IAuthenticationService _authenticationService { get; private set; }
         #endregion
 
+        private ImageSource _image;
+        public ImageSource Image
+        {
+            get { return _image; }
+            set { SetProperty(ref _image, value); }
+        }
+
         public MainPageViewModel(INavigationService navigationService, ITextToSpeech textToSpeechService, IAuthenticationService authenticationService)
             : base(navigationService)
         {
@@ -35,29 +44,23 @@ namespace ProjectIP.ViewModels
             _textToSpeechService = textToSpeechService;
             _authenticationService = authenticationService;
             TestTTSCommand = new DelegateCommand(TestTTS);
-            SignOutCommand = new DelegateCommand(SignOut);
-            AddWordCommand = new DelegateCommand(async()=> await AddWord());
+            SignOutCommand = new DelegateCommand(async () => await SignOut());
+            AddWordCommand = new DelegateCommand(async () => await AddWord());
         }
 
-        private async void SignOut()
+        private async Task SignOut()
         {
             _authenticationService.SignOut();
-            // NavigationService.NavigateAsync("LoginPage", null, true, true);
             await NavigationService.NavigateAsync("app:///NavigationPage/LoginPage");
         }
 
         private async void TestTTS()
         {
-            var uid = _authenticationService.GetUid();
-            var firebaseClient = new FirebaseClient("https://projekt-ip-default-rtdb.europe-west1.firebasedatabase.app/",
-                new FirebaseOptions { AuthTokenAsyncFactory = () => _authenticationService.GetToken() });
-            await firebaseClient.Child("word").Child(uid).PostAsync(new Word()
-            {
-                ImageName = "pies.png",
-                ImagePath = $"users/{uid}/test.png",
-                Description = "Pies"
-            });
-            //_textToSpeechService.SpeakAsync("Hello World");
+            var storage = new FirebaseStorage("projekt-ip.appspot.com",
+                new FirebaseStorageOptions { AuthTokenAsyncFactory = async () => await _authenticationService.GetToken() });
+            var url = await storage.Child("users").Child(_authenticationService.GetUid()).Child("artworks-000644051680-9dpi8s-t500x500.jpg").GetDownloadUrlAsync();
+            Image = ImageSource.FromUri(new Uri(url));
+            await _textToSpeechService.SpeakAsync("Hello World");
         }
 
         private async Task AddWord()

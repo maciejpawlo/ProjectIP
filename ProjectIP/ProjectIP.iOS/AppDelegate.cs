@@ -4,6 +4,7 @@ using Prism.Ioc;
 using UIKit;
 using ProjectIP.Interfaces;
 using ProjectIP.iOS.Services;
+using Acr.UserDialogs;
 
 namespace ProjectIP.iOS
 {
