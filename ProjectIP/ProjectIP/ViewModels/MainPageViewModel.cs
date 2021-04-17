@@ -37,13 +37,20 @@ namespace ProjectIP.ViewModels
             set { SetProperty(ref _image, value); }
         }
 
+        private string _uid;
+        public string Uid
+        {
+            get { return _uid; }
+            set { SetProperty(ref _uid, value); }
+        }
+
         public MainPageViewModel(INavigationService navigationService, ITextToSpeech textToSpeechService, IAuthenticationService authenticationService)
             : base(navigationService)
         {
             Title = "Strona główna";
             _textToSpeechService = textToSpeechService;
             _authenticationService = authenticationService;
-            TestTTSCommand = new DelegateCommand(TestTTS);
+            TestTTSCommand = new DelegateCommand(async () => await TestTTS());
             SignOutCommand = new DelegateCommand(async () => await SignOut());
             AddWordCommand = new DelegateCommand(async () => await AddWord());
         }
@@ -54,18 +61,34 @@ namespace ProjectIP.ViewModels
             await NavigationService.NavigateAsync("app:///NavigationPage/LoginPage");
         }
 
-        private async void TestTTS()
+        private async Task TestTTS()
         {
+            var uid = _authenticationService.GetUid();
+
             var storage = new FirebaseStorage("projekt-ip.appspot.com",
                 new FirebaseStorageOptions { AuthTokenAsyncFactory = async () => await _authenticationService.GetToken() });
-            var url = await storage.Child("users").Child(_authenticationService.GetUid()).Child("artworks-000644051680-9dpi8s-t500x500.jpg").GetDownloadUrlAsync();
+            var url = await storage.Child("users").Child(uid).Child("artworks-000644051680-9dpi8s-t500x500.jpg").GetDownloadUrlAsync();
             Image = ImageSource.FromUri(new Uri(url));
-            await _textToSpeechService.SpeakAsync("Hello World");
+
+            //await _textToSpeechService.SpeakAsync("Hello World");
         }
 
         private async Task AddWord()
         {
             await NavigationService.NavigateAsync("NavigationPage/AddWordPage", null, true, true);
+        }
+        public override void Initialize(INavigationParameters parameters)
+        {
+            Uid = _authenticationService.GetUid(); //todo zmienic pozniej na dodawanie do app preferences
+            //.Initialize(parameters);
+        }
+
+        public override async void OnNavigatedTo(INavigationParameters parameters)
+        {
+            var firebaseClient = new FirebaseClient("https://projekt-ip-default-rtdb.europe-west1.firebasedatabase.app/",
+               new FirebaseOptions { AuthTokenAsyncFactory = async () => await _authenticationService.GetToken() });
+            var words = (await firebaseClient.Child("word").Child(Uid).OnceAsync<Word>()).Select(x => x.Object).ToList();
+            //base.OnNavigatedTo(parameters);
         }
 
     }

@@ -3,14 +3,14 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:prism="http://prismlibrary.com"
              prism:ViewModelLocator.AutowireViewModel="True"
-             x:Class="ProjectIP.Views.LoginPage"
+             x:Class="ProjectIP.Views.RegisterPage"
              Title="{Binding Title}">
-    
+    <ContentPage.ToolbarItems >
+        <ToolbarItem Text="Powrót" Priority="0" Order="Primary" Command="{Binding GoBackCommand}"/>
+    </ContentPage.ToolbarItems>
     <StackLayout HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand">
         <Entry Placeholder="Email" Text="{Binding Email}" WidthRequest="250"/>
         <Entry Placeholder="Hasło" Text="{Binding Password}" IsPassword="True" WidthRequest="250"/>
-        <Button Text="Zaloguj" Command="{Binding LoginCommand}"/>
-        <Label Text="lub" HorizontalOptions="CenterAndExpand"/>
-        <Button Text="Zarejestruj się" Command="{Binding NavigateToRegisterCommand}"/>
+        <Button Text="Załóż konto" Command="{Binding RegisterCommand}"/>
     </StackLayout>
 </ContentPage>

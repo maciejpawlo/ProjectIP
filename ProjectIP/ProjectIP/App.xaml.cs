@@ -49,6 +49,7 @@ namespace ProjectIP
             containerRegistry.RegisterForNavigation<PrismContentPage, PrismContentPageViewModel>();
             containerRegistry.RegisterForNavigation<LoginPage, LoginPageViewModel>();
             containerRegistry.RegisterForNavigation<AddWordPage, AddWordPageViewModel>();
+            containerRegistry.RegisterForNavigation<RegisterPage, RegisterPageViewModel>();
         }
     }
 }

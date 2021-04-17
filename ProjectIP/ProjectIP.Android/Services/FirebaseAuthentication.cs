@@ -22,7 +22,6 @@ namespace ProjectIP.Droid.Services
             if (IsSignedIn())
             {
                 GetTokenResult tokenRequest = (GetTokenResult) await FirebaseAuth.Instance.CurrentUser.GetIdToken(true);
-                var test = tokenRequest.GetType();
                 return tokenRequest.Token;
             }
             return string.Empty;
@@ -64,7 +63,7 @@ namespace ProjectIP.Droid.Services
             }
         }
 
-        public async Task<string> SignInWithEmailAndPassword(string email, string password)
+        public async Task<string> RegisterWithEmailAndPassword(string email, string password)
         {
             try
             {
@@ -86,7 +85,7 @@ namespace ProjectIP.Droid.Services
 
         public bool SignOut()
         {
-            try
+            try  
             {
                 FirebaseAuth.Instance.SignOut();
                 return true;

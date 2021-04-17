@@ -51,7 +51,7 @@ namespace ProjectIP.iOS.Services
 
         }
 
-        public async Task<string> SignInWithEmailAndPassword(string email, string password)
+        public async Task<string> RegisterWithEmailAndPassword(string email, string password)
         {
             try
             {

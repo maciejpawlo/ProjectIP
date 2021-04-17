@@ -121,6 +121,13 @@ namespace ProjectIP.ViewModels
            //TODO zrobic serwis dla firebase storage i realtime database
             var firebaseClient = new FirebaseClient("https://projekt-ip-default-rtdb.europe-west1.firebasedatabase.app/",
                 new FirebaseOptions { AuthTokenAsyncFactory = async () => await _authenticationService.GetToken() });
+
+            using (var firebaseClient2 = new FirebaseClient("https://projekt-ip-default-rtdb.europe-west1.firebasedatabase.app/",
+                new FirebaseOptions { AuthTokenAsyncFactory = async () => await _authenticationService.GetToken() }))
+            {
+
+            }
+
             await firebaseClient.Child("word").Child(uid).Child(Description).PutAsync(new Word()
             {
                 ImageName = FileName,
@@ -128,10 +135,14 @@ namespace ProjectIP.ViewModels
                 Description = Description,
                 Category = Category
             });
+
+            
             var stream = new MemoryStream(ImageBytes);
             var storage = new FirebaseStorage("projekt-ip.appspot.com",
                 new FirebaseStorageOptions { AuthTokenAsyncFactory = async () => await _authenticationService.GetToken() });
+            
             _userDialogsService.ShowLoading("Trwa zapis zdjęcia...");
+
             await storage.Child("users").Child(uid).Child(FileName).PutAsync(stream);
             _userDialogsService.HideLoading();
             await NavigationService.GoBackAsync();
