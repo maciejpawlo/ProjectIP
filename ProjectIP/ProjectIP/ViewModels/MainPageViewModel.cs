@@ -28,8 +28,10 @@ namespace ProjectIP.ViewModels
         #region Services
         public ITextToSpeech _textToSpeechService { get; private set; }
         public IAuthenticationService _authenticationService { get; private set; }
+        public IDatabaseService _databaseService { get; private set; }
         #endregion
 
+        #region Props
         private ImageSource _image;
         public ImageSource Image
         {
@@ -43,13 +45,15 @@ namespace ProjectIP.ViewModels
             get { return _uid; }
             set { SetProperty(ref _uid, value); }
         }
-
-        public MainPageViewModel(INavigationService navigationService, ITextToSpeech textToSpeechService, IAuthenticationService authenticationService)
+        #endregion
+        public MainPageViewModel(INavigationService navigationService, ITextToSpeech textToSpeechService, 
+            IAuthenticationService authenticationService, IDatabaseService databaseService)
             : base(navigationService)
         {
             Title = "Strona główna";
             _textToSpeechService = textToSpeechService;
             _authenticationService = authenticationService;
+            _databaseService = databaseService;
             TestTTSCommand = new DelegateCommand(async () => await TestTTS());
             SignOutCommand = new DelegateCommand(async () => await SignOut());
             AddWordCommand = new DelegateCommand(async () => await AddWord());
@@ -80,15 +84,11 @@ namespace ProjectIP.ViewModels
         public override void Initialize(INavigationParameters parameters)
         {
             Uid = _authenticationService.GetUid(); //todo zmienic pozniej na dodawanie do app preferences
-            //.Initialize(parameters);
         }
 
         public override async void OnNavigatedTo(INavigationParameters parameters)
         {
-            var firebaseClient = new FirebaseClient("https://projekt-ip-default-rtdb.europe-west1.firebasedatabase.app/",
-               new FirebaseOptions { AuthTokenAsyncFactory = async () => await _authenticationService.GetToken() });
-            var words = (await firebaseClient.Child("word").Child(Uid).OnceAsync<Word>()).Select(x => x.Object).ToList();
-            //base.OnNavigatedTo(parameters);
+            var testServ = await _databaseService.GetAllWords();
         }
 
     }

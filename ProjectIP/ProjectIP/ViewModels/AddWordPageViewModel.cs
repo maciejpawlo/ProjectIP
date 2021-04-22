@@ -72,17 +72,18 @@ namespace ProjectIP.ViewModels
         public IFilePicker _filePickerService { get; private set; }
         public IAuthenticationService _authenticationService { get; private set; }
         public IPermissions _permissions { get; set; }
-
+        public IDatabaseService _databaseService { get; private set; }
         public IUserDialogs _userDialogsService { get; private set; }
         #endregion
 
         public AddWordPageViewModel(INavigationService navigationService, IFilePicker filepicker, IAuthenticationService authenticationService, 
-            IPermissions permissions, IUserDialogs userDialogsService) : base (navigationService)
+            IPermissions permissions, IUserDialogs userDialogsService, IDatabaseService databaseService) : base (navigationService)
         {
             _userDialogsService = userDialogsService;
             _filePickerService = filepicker;
             _authenticationService = authenticationService;
             _permissions = permissions;
+            _databaseService = databaseService;
             ShowPickerCommand = new DelegateCommand(async () => await OpenFilePickerAsync());
             SaveWordCommmand = new DelegateCommand(async () => await SaveWord());
             Title = "Dodaj nowe słowo";
@@ -119,30 +120,20 @@ namespace ProjectIP.ViewModels
         {
             var uid = _authenticationService.GetUid();
            //TODO zrobic serwis dla firebase storage i realtime database
-            var firebaseClient = new FirebaseClient("https://projekt-ip-default-rtdb.europe-west1.firebasedatabase.app/",
-                new FirebaseOptions { AuthTokenAsyncFactory = async () => await _authenticationService.GetToken() });
-
-            using (var firebaseClient2 = new FirebaseClient("https://projekt-ip-default-rtdb.europe-west1.firebasedatabase.app/",
-                new FirebaseOptions { AuthTokenAsyncFactory = async () => await _authenticationService.GetToken() }))
-            {
-
-            }
-
-            await firebaseClient.Child("word").Child(uid).Child(Description).PutAsync(new Word()
+            var wordToSave = new Word()
             {
                 ImageName = FileName,
                 ImagePath = $"/users/{uid}/{FileName}",
                 Description = Description,
                 Category = Category
-            });
-
+            };
             
             var stream = new MemoryStream(ImageBytes);
             var storage = new FirebaseStorage("projekt-ip.appspot.com",
                 new FirebaseStorageOptions { AuthTokenAsyncFactory = async () => await _authenticationService.GetToken() });
             
             _userDialogsService.ShowLoading("Trwa zapis zdjęcia...");
-
+            await _databaseService.AddWord(wordToSave);
             await storage.Child("users").Child(uid).Child(FileName).PutAsync(stream);
             _userDialogsService.HideLoading();
             await NavigationService.GoBackAsync();
