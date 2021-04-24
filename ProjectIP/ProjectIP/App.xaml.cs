@@ -9,6 +9,8 @@ using Xamarin.Essentials.Interfaces;
 using Xamarin.Forms;
 using Acr.UserDialogs;
 using ProjectIP.Services;
+using Firebase.Database;
+using Firebase.Storage;
 
 namespace ProjectIP
 {
@@ -23,7 +25,6 @@ namespace ProjectIP
         {
             InitializeComponent();
 
-            //await NavigationService.NavigateAsync("NavigationPage/MainPage");
             var authentication = Container.Resolve<IAuthenticationService>();
             if (authentication.IsSignedIn())
             {
@@ -45,7 +46,11 @@ namespace ProjectIP
             containerRegistry.RegisterSingleton<IPermissions, PermissionsImplementation>();
             containerRegistry.RegisterSingleton<IMediaPicker, MediaPickerImplementation>();
             containerRegistry.RegisterInstance<IUserDialogs>(UserDialogs.Instance);
-            containerRegistry.RegisterScoped<IDatabaseService, DatabaseService>();
+            containerRegistry.Register<IDatabaseService, DatabaseService>();
+            containerRegistry.Register<FirebaseClient>(() => new FirebaseClient("https://projekt-ip-default-rtdb.europe-west1.firebasedatabase.app/",
+               new FirebaseOptions { AuthTokenAsyncFactory = async () => await Container.Resolve<IAuthenticationService>().GetToken()}));
+            containerRegistry.Register<FirebaseStorage>(() => new FirebaseStorage("projekt-ip.appspot.com",
+                new FirebaseStorageOptions { AuthTokenAsyncFactory = async () => await Container.Resolve<IAuthenticationService>().GetToken() }));
 
             containerRegistry.RegisterForNavigation<NavigationPage>();
             containerRegistry.RegisterForNavigation<MainPage, MainPageViewModel>();

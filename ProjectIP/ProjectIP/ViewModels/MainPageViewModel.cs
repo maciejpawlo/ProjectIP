@@ -6,6 +6,7 @@ using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Navigation;
 using ProjectIP.Interfaces;
+using Prism.Ioc;
 using ProjectIP.Models;
 using System;
 using System.Collections.Generic;
@@ -29,6 +30,7 @@ namespace ProjectIP.ViewModels
         public ITextToSpeech _textToSpeechService { get; private set; }
         public IAuthenticationService _authenticationService { get; private set; }
         public IDatabaseService _databaseService { get; private set; }
+        public FirebaseStorage _storage { get; private set; }
         #endregion
 
         #region Props
@@ -54,6 +56,7 @@ namespace ProjectIP.ViewModels
             _textToSpeechService = textToSpeechService;
             _authenticationService = authenticationService;
             _databaseService = databaseService;
+            _storage = App.Current.Container.Resolve<FirebaseStorage>();
             TestTTSCommand = new DelegateCommand(async () => await TestTTS());
             SignOutCommand = new DelegateCommand(async () => await SignOut());
             AddWordCommand = new DelegateCommand(async () => await AddWord());
@@ -67,16 +70,9 @@ namespace ProjectIP.ViewModels
 
         private async Task TestTTS()
         {
-            var uid = _authenticationService.GetUid();
-
-            var storage = new FirebaseStorage("projekt-ip.appspot.com",
-                new FirebaseStorageOptions { AuthTokenAsyncFactory = async () => await _authenticationService.GetToken() });
-            //var url = await storage.Child("users").Child(uid).Child("artworks-000644051680-9dpi8s-t500x500.jpg").GetDownloadUrlAsync();
-            var url = await storage.Child("users").Child(uid).Child("0AE852EB-76F6-4607-84AF-8845B1779A9A.jpeg").GetDownloadUrlAsync(); //test zdjec wrzuconych z ios
+            var url = await _storage.Child("users").Child(Uid).Child("0AE852EB-76F6-4607-84AF-8845B1779A9A.jpeg").GetDownloadUrlAsync();
             Image = ImageSource.FromUri(new Uri(url));
-
-            //await _textToSpeechService.SpeakAsync("Hello World"); 0AE852EB-76F6-4607-84AF-8845B1779A9A.jpeg 
-            // gs://projekt-ip.appspot.com/users/pxtSPiLT3wdkPoSCGIfDwyXQXog2/0AE852EB-76F6-4607-84AF-8845B1779A9A.jpeg
+            //await _textToSpeechService.SpeakAsync("Hello World");
         }
 
         private async Task AddWord()
