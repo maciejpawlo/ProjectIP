@@ -23,6 +23,7 @@ namespace ProjectIP.ViewModels
         #region Commands
         public DelegateCommand ShowPickerCommand { get; set; }
         public DelegateCommand SaveWordCommmand { get; set; }
+        public DelegateCommand GoBackCommand { get; set; }
         #endregion
 
         #region Props
@@ -69,23 +70,24 @@ namespace ProjectIP.ViewModels
         #endregion
 
         #region Services
-        public IFilePicker _filePickerService { get; private set; }
         public IAuthenticationService _authenticationService { get; private set; }
-        public IPermissions _permissions { get; set; }
+        public IPermissions _permissions { get; private set; }
         public IDatabaseService _databaseService { get; private set; }
         public IUserDialogs _userDialogsService { get; private set; }
+        public IMediaPicker _mediaPickerService { get; private set; }
         #endregion
 
-        public AddWordPageViewModel(INavigationService navigationService, IFilePicker filepicker, IAuthenticationService authenticationService, 
-            IPermissions permissions, IUserDialogs userDialogsService, IDatabaseService databaseService) : base (navigationService)
+        public AddWordPageViewModel(INavigationService navigationService, IAuthenticationService authenticationService, 
+            IPermissions permissions, IUserDialogs userDialogsService, IDatabaseService databaseService, IMediaPicker mediaPicker) : base (navigationService)
         {
             _userDialogsService = userDialogsService;
-            _filePickerService = filepicker;
             _authenticationService = authenticationService;
             _permissions = permissions;
+            _mediaPickerService = mediaPicker;
             _databaseService = databaseService;
             ShowPickerCommand = new DelegateCommand(async () => await OpenFilePickerAsync());
             SaveWordCommmand = new DelegateCommand(async () => await SaveWord());
+            GoBackCommand = new DelegateCommand(async () => await GoBack());
             Title = "Dodaj nowe słowo";
         }
 
@@ -93,7 +95,7 @@ namespace ProjectIP.ViewModels
         {
             try
             {
-                var result = await _filePickerService.PickAsync();
+                var result = await _mediaPickerService.PickPhotoAsync();
                 if (result != null)
                 {
                     FileName = result.FileName;
@@ -136,6 +138,11 @@ namespace ProjectIP.ViewModels
             await _databaseService.AddWord(wordToSave);
             await storage.Child("users").Child(uid).Child(FileName).PutAsync(stream);
             _userDialogsService.HideLoading();
+            await NavigationService.GoBackAsync();
+        }
+
+        private async Task GoBack()
+        {
             await NavigationService.GoBackAsync();
         }
     }

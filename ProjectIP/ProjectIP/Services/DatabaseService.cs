@@ -13,38 +13,37 @@ namespace ProjectIP.Services
     public class DatabaseService : IDatabaseService
     {
         public IAuthenticationService _authenticationService { get; private set; }
-        private FirebaseClient firebaseClient { get;  set; }
+        private FirebaseClient FirebaseClient { get;  set; }
         public DatabaseService(IAuthenticationService authenticationService)
         {
              _authenticationService = authenticationService;
-             firebaseClient = new FirebaseClient("https://projekt-ip-default-rtdb.europe-west1.firebasedatabase.app/",
+             FirebaseClient = new FirebaseClient("https://projekt-ip-default-rtdb.europe-west1.firebasedatabase.app/",
                new FirebaseOptions { AuthTokenAsyncFactory = async () => await _authenticationService.GetToken() });
         }
         public async Task AddWord(Word newWord)
         {
             var uid = _authenticationService.GetUid();
-            await firebaseClient.Child("word").Child(uid).Child(newWord.Description).PutAsync(newWord);
+            await FirebaseClient.Child("word").Child(uid).Child(newWord.Description).PutAsync(newWord);
         }
 
         public async Task DeleteWord(string path)
         {
             //TODO sprawdzać obiekt usuwany tylko z poddrzewa prywatnego 
-            //if path contains 
+            //if path not contains shared --> nie usuwaj 
             throw new NotImplementedException();
         }
 
         public async Task EditWord(string path)
         {
             //TODO przy edycji słowa z shared -> przepisanie na prywatne poddrzewo
-            //przy 
             throw new NotImplementedException();
         }
 
         public async Task<List<Word>> GetAllWords()
         {
             var uid = _authenticationService.GetUid();
-            var shared = (await firebaseClient.Child("word").Child("shared").OnceAsync<Word>()).Select(x => x.Object).ToList();
-            var words = (await firebaseClient.Child("word").Child(uid).OnceAsync<Word>()).Select(x => x.Object).ToList();
+            var shared = (await FirebaseClient.Child("word").Child("shared").OnceAsync<Word>()).Select(x => x.Object).ToList();
+            var words = (await FirebaseClient.Child("word").Child(uid).OnceAsync<Word>()).Select(x => x.Object).ToList();
             var query = (from sh in shared
                          join pv in words on new { sh.Description, sh.Category } equals new { pv.Description, pv.Category }
                          select sh).ToList();

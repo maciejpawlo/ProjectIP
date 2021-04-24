@@ -71,10 +71,12 @@ namespace ProjectIP.ViewModels
 
             var storage = new FirebaseStorage("projekt-ip.appspot.com",
                 new FirebaseStorageOptions { AuthTokenAsyncFactory = async () => await _authenticationService.GetToken() });
-            var url = await storage.Child("users").Child(uid).Child("artworks-000644051680-9dpi8s-t500x500.jpg").GetDownloadUrlAsync();
+            //var url = await storage.Child("users").Child(uid).Child("artworks-000644051680-9dpi8s-t500x500.jpg").GetDownloadUrlAsync();
+            var url = await storage.Child("users").Child(uid).Child("0AE852EB-76F6-4607-84AF-8845B1779A9A.jpeg").GetDownloadUrlAsync(); //test zdjec wrzuconych z ios
             Image = ImageSource.FromUri(new Uri(url));
 
-            //await _textToSpeechService.SpeakAsync("Hello World");
+            //await _textToSpeechService.SpeakAsync("Hello World"); 0AE852EB-76F6-4607-84AF-8845B1779A9A.jpeg 
+            // gs://projekt-ip.appspot.com/users/pxtSPiLT3wdkPoSCGIfDwyXQXog2/0AE852EB-76F6-4607-84AF-8845B1779A9A.jpeg
         }
 
         private async Task AddWord()

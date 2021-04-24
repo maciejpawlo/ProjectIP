@@ -43,6 +43,7 @@ namespace ProjectIP
             containerRegistry.RegisterSingleton<ITextToSpeech, TextToSpeechImplementation>();
             containerRegistry.RegisterSingleton<IFilePicker, FilePickerImplementation>();
             containerRegistry.RegisterSingleton<IPermissions, PermissionsImplementation>();
+            containerRegistry.RegisterSingleton<IMediaPicker, MediaPickerImplementation>();
             containerRegistry.RegisterInstance<IUserDialogs>(UserDialogs.Instance);
             containerRegistry.RegisterScoped<IDatabaseService, DatabaseService>();
 

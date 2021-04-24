@@ -5,6 +5,9 @@
              prism:ViewModelLocator.AutowireViewModel="True"
              x:Class="ProjectIP.Views.AddWordPage"
              Title="{Binding Title}">
+    <ContentPage.ToolbarItems >
+        <ToolbarItem Text="Powrót" Priority="0" Order="Primary" Command="{Binding GoBackCommand}"/>
+    </ContentPage.ToolbarItems>
     <ScrollView>
         <StackLayout HorizontalOptions="CenterAndExpand" VerticalOptions="StartAndExpand">
             <Frame WidthRequest="250" HeightRequest="250" BackgroundColor="WhiteSmoke" BorderColor="Gray" Margin="5,45">
