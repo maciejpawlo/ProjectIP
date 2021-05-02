@@ -1,16 +1,135 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:fontAwesome="clr-namespace:FontAwesome"
+             xmlns:viewmodels="clr-namespace:ProjectIP.ViewModels"
              x:Class="ProjectIP.Views.MainPage"
              Title="{Binding Title}">
     <ContentPage.ToolbarItems >
-        <ToolbarItem Text="Wyloguj" Priority="1" Order="Secondary" Command="{Binding SignOutCommand}"/>
-        <ToolbarItem Text="Dodaj słowo" Priority="0" Order="Primary" Command="{Binding AddWordCommand}"/>
+        <ToolbarItem Text="Wyloguj" Priority="0" Order="Primary" Command="{Binding SignOutCommand}"/>
+        <!--<ToolbarItem Text="Dodaj słowo" Priority="0" Order="Primary" Command="{Binding AddWordCommand}"/>-->
     </ContentPage.ToolbarItems>
-    <StackLayout HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand">
-        <Image Source="{Binding Image}"/>
-        <Label Text="Welcome to Xamarin Forms and Prism!"/>
-        <Button Text="TTS test" Command="{Binding TestTTSCommand}"/>
+    <StackLayout HorizontalOptions="CenterAndExpand" Padding="5">
+        <Frame WidthRequest="350" HeightRequest="50" BorderColor="Black" HasShadow="False" Margin="0,5,0,0">
+            <Button Text="{x:Static fontAwesome:FontAwesomeIcons.Play}" TextColor="Green" FontFamily="FontAwesome5Solid" Command="{Binding TestTTSCommand}"
+                    HorizontalOptions="End" CornerRadius="30"  WidthRequest="60"></Button> 
+        </Frame>
+
+        <Grid ColumnDefinitions="3*,3*,3*" RowDefinitions="80,80,80" Margin="0,15,0,0" IsVisible="{Binding IsCatListVisible}">
+            <!--1st row-->
+            <Button Text="Zwierzęta" Grid.Row="0" Grid.Column="0" ContentLayout="Top" Command="{Binding FilterWordsCommand}" CommandParameter="Zwierzęta">
+                <Button.ImageSource>
+                    <FontImageSource FontFamily="FontAwesome5Solid"
+                     Color="Black"
+                     Glyph="{x:Static fontAwesome:FontAwesomeIcons.Paw}"/>
+                </Button.ImageSource>
+            </Button>
+            <Button Text="Jedzenie" Grid.Row="0" Grid.Column="1" ContentLayout="Top" Command="{Binding FilterWordsCommand}" CommandParameter="Jedzenie">
+                <Button.ImageSource>
+                    <FontImageSource FontFamily="FontAwesome5Solid"
+                     Color="Black"
+                     Glyph="{x:Static fontAwesome:FontAwesomeIcons.PizzaSlice}"/>
+                </Button.ImageSource>
+            </Button>
+            <Button Text="Liczby" Grid.Row="0" Grid.Column="2" ContentLayout="Top" Command="{Binding FilterWordsCommand}" CommandParameter="Liczby">
+                <Button.ImageSource>
+                    <FontImageSource FontFamily="FontAwesome5Solid"
+                     Color="Black"
+                     Glyph="{x:Static fontAwesome:FontAwesomeIcons.ListOl}"/>
+                </Button.ImageSource>
+            </Button>
+            <!--2nd row-->
+            <Button Text="Zwroty" Grid.Row="1" Grid.Column="0" ContentLayout="Top" Command="{Binding FilterWordsCommand}" CommandParameter="Zwroty">
+                <Button.ImageSource>
+                    <FontImageSource FontFamily="FontAwesome5Solid"
+                     Color="Black"
+                     Glyph="{x:Static fontAwesome:FontAwesomeIcons.HandPaper}"/>
+                </Button.ImageSource>
+            </Button>
+            <Button Text="Czynności" Grid.Row="1" Grid.Column="1" ContentLayout="Top" Command="{Binding FilterWordsCommand}" CommandParameter="Czynności">
+                <Button.ImageSource>
+                    <FontImageSource FontFamily="FontAwesome5Solid"
+                     Color="Black"
+                     Glyph="{x:Static fontAwesome:FontAwesomeIcons.Running}"/>
+                </Button.ImageSource>
+            </Button>
+            <Button Text="Emocje" Grid.Row="1" Grid.Column="2" ContentLayout="Top" Command="{Binding FilterWordsCommand}" CommandParameter="Emocje">
+                <Button.ImageSource>
+                    <FontImageSource FontFamily="FontAwesome5Regular"
+                     Color="Black"
+                     Glyph="{x:Static fontAwesome:FontAwesomeIcons.Smile}"/>
+                </Button.ImageSource>
+            </Button>
+            <!--3rd row-->
+            <Button Text="Miejsca" Grid.Row="2" Grid.Column="0" ContentLayout="Top" Command="{Binding FilterWordsCommand}" CommandParameter="Miejsca">
+                <Button.ImageSource>
+                    <FontImageSource FontFamily="FontAwesome5Solid"
+                     Color="Black"
+                     Glyph="{x:Static fontAwesome:FontAwesomeIcons.Globe}"/>
+                </Button.ImageSource>
+            </Button>
+            <Button Text="Osoby" Grid.Row="2" Grid.Column="1" ContentLayout="Top" Command="{Binding FilterWordsCommand}" CommandParameter="Osoby">
+                <Button.ImageSource>
+                    <FontImageSource FontFamily="FontAwesome5Solid"
+                     Color="Black"
+                     Glyph="{x:Static fontAwesome:FontAwesomeIcons.Users}"/>
+                </Button.ImageSource>
+            </Button>
+            <Button Text="Dodaj" Grid.Row="2" Grid.Column="2" ContentLayout="Top" Command="{Binding AddWordCommand}">
+                <Button.ImageSource>
+                    <FontImageSource FontFamily="FontAwesome5Solid"
+                     Color="Black"
+                     Glyph="{x:Static fontAwesome:FontAwesomeIcons.Plus}"/>
+                </Button.ImageSource>
+            </Button>
+        </Grid>
+        <CollectionView Margin="0,15,0,0" IsVisible="{Binding IsFilteredWordsVisible}" ItemsSource="{Binding FilteredWords}">
+            <CollectionView.ItemsLayout>
+                <GridItemsLayout Orientation="Vertical" Span="1" HorizontalItemSpacing="5" VerticalItemSpacing="5"></GridItemsLayout>
+            </CollectionView.ItemsLayout>
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <SwipeView>
+                        <SwipeView.RightItems>
+                            <SwipeItems Mode="Execute">
+                                <SwipeItemView BackgroundColor="Red"
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:MainPageViewModel}}, Path=TestTTSCommand}">
+                                    <Label Text="{x:Static fontAwesome:FontAwesomeIcons.TrashAlt}" FontFamily="FontAwesome5Solid" TextColor="Black"
+                                           VerticalOptions="CenterAndExpand" FontSize="Large" Padding="30"/>
+                                </SwipeItemView>
+                            </SwipeItems>
+                        </SwipeView.RightItems>
+
+                        <SwipeView.LeftItems>
+                            <SwipeItems Mode="Execute">
+                                <SwipeItemView BackgroundColor="Yellow"
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:MainPageViewModel}}, Path=TestTTSCommand}">
+                                    <Label Text="{x:Static fontAwesome:FontAwesomeIcons.Edit}" FontFamily="FontAwesome5Solid" TextColor="Black"
+                                           VerticalOptions="CenterAndExpand" FontSize="Medium" Padding="30"/>
+                                </SwipeItemView>
+                            </SwipeItems>
+                        </SwipeView.LeftItems>
+
+                        <Frame CornerRadius="20" HasShadow="False" BackgroundColor="White" BorderColor="Black" HeightRequest="80" Padding="0">
+                            <Button Text="{Binding Description}" TextColor="Black" CornerRadius="20"
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:MainPageViewModel}}, Path=TestTTSCommand}"/>
+                        </Frame>
+                    </SwipeView>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+            <CollectionView.Footer>
+                <StackLayout>
+                    <Button Command="{Binding CloseFilteredWordsCommand}" BackgroundColor="Transparent">
+                        <Button.ImageSource>
+                            <FontImageSource FontFamily="FontAwesome5Solid"
+                            Color="Black"
+                            Glyph="{x:Static fontAwesome:FontAwesomeIcons.ArrowCircleLeft}"/>
+                        </Button.ImageSource>
+                    </Button>
+                </StackLayout>
+            </CollectionView.Footer>
+            
+        </CollectionView>
     </StackLayout>
 
 </ContentPage>

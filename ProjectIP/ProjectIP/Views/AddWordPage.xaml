@@ -19,12 +19,14 @@
                 Title="Kategoria zdjęcia" SelectedItem="{Binding Category}">   
                 <Picker.ItemsSource>
                     <x:Array Type="{x:Type x:String}">
-                        <x:String>Ludzie</x:String>
+                        <x:String>Osoby</x:String>
                         <x:String>Jedzenie</x:String>
                         <x:String>Zwierzęta</x:String>
-                        <x:String>Rośliny</x:String>
-                        <x:String>Czasowniki</x:String>
-                        <x:String>Inne</x:String>
+                        <x:String>Czynności</x:String>
+                        <x:String>Miejsca</x:String>
+                        <x:String>Liczby</x:String>
+                        <x:String>Emocje</x:String>
+                        <x:String>Zwroty</x:String>
                     </x:Array>
                 </Picker.ItemsSource>
             </Picker>

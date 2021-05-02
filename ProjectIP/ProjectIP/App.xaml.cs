@@ -32,7 +32,6 @@ namespace ProjectIP
             }
             else
             {
-                //await NavigationService.NavigateAsync("LoginPage", null, true, true);
                 await NavigationService.NavigateAsync("app:///NavigationPage/LoginPage");
             }
             
@@ -47,6 +46,7 @@ namespace ProjectIP
             containerRegistry.RegisterSingleton<IMediaPicker, MediaPickerImplementation>();
             containerRegistry.RegisterInstance<IUserDialogs>(UserDialogs.Instance);
             containerRegistry.Register<IDatabaseService, DatabaseService>();
+            containerRegistry.Register<IStorageService, StorageService>();
             containerRegistry.Register<FirebaseClient>(() => new FirebaseClient("https://projekt-ip-default-rtdb.europe-west1.firebasedatabase.app/",
                new FirebaseOptions { AuthTokenAsyncFactory = async () => await Container.Resolve<IAuthenticationService>().GetToken()}));
             containerRegistry.Register<FirebaseStorage>(() => new FirebaseStorage("projekt-ip.appspot.com",
