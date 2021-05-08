@@ -10,28 +10,54 @@
         <!--<ToolbarItem Text="Dodaj słowo" Priority="0" Order="Primary" Command="{Binding AddWordCommand}"/>-->
     </ContentPage.ToolbarItems>
     <StackLayout HorizontalOptions="CenterAndExpand" Padding="5">
-        <Frame WidthRequest="350" HeightRequest="50" BorderColor="Black" HasShadow="False" Margin="0,5,0,0">
-            <Button Text="{x:Static fontAwesome:FontAwesomeIcons.Play}" TextColor="Green" FontFamily="FontAwesome5Solid" Command="{Binding TestTTSCommand}"
-                    HorizontalOptions="End" CornerRadius="30"  WidthRequest="60"></Button> 
+        <Frame WidthRequest="350" HeightRequest="60" BackgroundColor="White" MinimumHeightRequest="60" HasShadow="True" Margin="0,5,0,0" CornerRadius="20">
+            <StackLayout Orientation="Horizontal">
+                <CollectionView ItemsSource="{Binding SentenceToRead}">
+                    <CollectionView.ItemsLayout>
+                        <GridItemsLayout Orientation="Horizontal" HorizontalItemSpacing="5" VerticalItemSpacing="10"></GridItemsLayout>
+                    </CollectionView.ItemsLayout>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <SwipeView>
+                                <Frame CornerRadius="20" MinimumWidthRequest="25" Padding="0" BackgroundColor="White" HasShadow="True" BorderColor="LightGray">
+                                    <Label Text="{Binding Description}" TextColor="Black" Margin="10" HorizontalOptions="CenterAndExpand"
+                                           VerticalOptions="CenterAndExpand" InputTransparent="True"/>
+                                </Frame>
+                                <SwipeView.GestureRecognizers>
+                                    <TapGestureRecognizer NumberOfTapsRequired="2" 
+                                                          Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:MainPageViewModel}}, Path=DeleteWordFromSentenceCommand}"
+                                                          CommandParameter="{Binding .}">
+                                    </TapGestureRecognizer>
+                                </SwipeView.GestureRecognizers>
+                            </SwipeView>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+                <Button Text="{x:Static fontAwesome:FontAwesomeIcons.Play}" TextColor="Green" FontFamily="FontAwesome5Solid" Command="{Binding TestTTSCommand}"
+                         CornerRadius="30"  WidthRequest="60"></Button>
+            </StackLayout>
         </Frame>
-
+        
         <Grid ColumnDefinitions="3*,3*,3*" RowDefinitions="80,80,80" Margin="0,15,0,0" IsVisible="{Binding IsCatListVisible}">
             <!--1st row-->
-            <Button Text="Zwierzęta" Grid.Row="0" Grid.Column="0" ContentLayout="Top" Command="{Binding FilterWordsCommand}" CommandParameter="Zwierzęta">
+            <Button Text="Zwierzęta" Grid.Row="0" Grid.Column="0" ContentLayout="Top" Command="{Binding FilterWordsCommand}"
+                    IsEnabled="{Binding IsCatButtonEnabled}" CommandParameter="Zwierzęta" CornerRadius="20">
                 <Button.ImageSource>
                     <FontImageSource FontFamily="FontAwesome5Solid"
                      Color="Black"
                      Glyph="{x:Static fontAwesome:FontAwesomeIcons.Paw}"/>
                 </Button.ImageSource>
             </Button>
-            <Button Text="Jedzenie" Grid.Row="0" Grid.Column="1" ContentLayout="Top" Command="{Binding FilterWordsCommand}" CommandParameter="Jedzenie">
+            <Button Text="Jedzenie" Grid.Row="0" Grid.Column="1" ContentLayout="Top" Command="{Binding FilterWordsCommand}"
+                    IsEnabled="{Binding IsCatButtonEnabled}" CommandParameter="Jedzenie" CornerRadius="20">
                 <Button.ImageSource>
                     <FontImageSource FontFamily="FontAwesome5Solid"
                      Color="Black"
                      Glyph="{x:Static fontAwesome:FontAwesomeIcons.PizzaSlice}"/>
                 </Button.ImageSource>
             </Button>
-            <Button Text="Liczby" Grid.Row="0" Grid.Column="2" ContentLayout="Top" Command="{Binding FilterWordsCommand}" CommandParameter="Liczby">
+            <Button Text="Liczby" Grid.Row="0" Grid.Column="2" ContentLayout="Top" Command="{Binding FilterWordsCommand}"
+                    IsEnabled="{Binding IsCatButtonEnabled}" CommandParameter="Liczby" CornerRadius="20">
                 <Button.ImageSource>
                     <FontImageSource FontFamily="FontAwesome5Solid"
                      Color="Black"
@@ -39,21 +65,24 @@
                 </Button.ImageSource>
             </Button>
             <!--2nd row-->
-            <Button Text="Zwroty" Grid.Row="1" Grid.Column="0" ContentLayout="Top" Command="{Binding FilterWordsCommand}" CommandParameter="Zwroty">
+            <Button Text="Zwroty" Grid.Row="1" Grid.Column="0" ContentLayout="Top" Command="{Binding FilterWordsCommand}"
+                    IsEnabled="{Binding IsCatButtonEnabled}" CommandParameter="Zwroty" CornerRadius="20">
                 <Button.ImageSource>
                     <FontImageSource FontFamily="FontAwesome5Solid"
                      Color="Black"
                      Glyph="{x:Static fontAwesome:FontAwesomeIcons.HandPaper}"/>
                 </Button.ImageSource>
             </Button>
-            <Button Text="Czynności" Grid.Row="1" Grid.Column="1" ContentLayout="Top" Command="{Binding FilterWordsCommand}" CommandParameter="Czynności">
+            <Button Text="Czynności" Grid.Row="1" Grid.Column="1" ContentLayout="Top" Command="{Binding FilterWordsCommand}"
+                    IsEnabled="{Binding IsCatButtonEnabled}" CommandParameter="Czynności" CornerRadius="20">
                 <Button.ImageSource>
                     <FontImageSource FontFamily="FontAwesome5Solid"
                      Color="Black"
                      Glyph="{x:Static fontAwesome:FontAwesomeIcons.Running}"/>
                 </Button.ImageSource>
             </Button>
-            <Button Text="Emocje" Grid.Row="1" Grid.Column="2" ContentLayout="Top" Command="{Binding FilterWordsCommand}" CommandParameter="Emocje">
+            <Button Text="Emocje" Grid.Row="1" Grid.Column="2" ContentLayout="Top" Command="{Binding FilterWordsCommand}"
+                    IsEnabled="{Binding IsCatButtonEnabled}" CommandParameter="Emocje" CornerRadius="20">
                 <Button.ImageSource>
                     <FontImageSource FontFamily="FontAwesome5Regular"
                      Color="Black"
@@ -61,21 +90,23 @@
                 </Button.ImageSource>
             </Button>
             <!--3rd row-->
-            <Button Text="Miejsca" Grid.Row="2" Grid.Column="0" ContentLayout="Top" Command="{Binding FilterWordsCommand}" CommandParameter="Miejsca">
+            <Button Text="Miejsca" Grid.Row="2" Grid.Column="0" ContentLayout="Top" Command="{Binding FilterWordsCommand}"
+                    IsEnabled="{Binding IsCatButtonEnabled}" CommandParameter="Miejsca" CornerRadius="20">
                 <Button.ImageSource>
                     <FontImageSource FontFamily="FontAwesome5Solid"
                      Color="Black"
                      Glyph="{x:Static fontAwesome:FontAwesomeIcons.Globe}"/>
                 </Button.ImageSource>
             </Button>
-            <Button Text="Osoby" Grid.Row="2" Grid.Column="1" ContentLayout="Top" Command="{Binding FilterWordsCommand}" CommandParameter="Osoby">
+            <Button Text="Osoby" Grid.Row="2" Grid.Column="1" ContentLayout="Top" Command="{Binding FilterWordsCommand}"
+                    IsEnabled="{Binding IsCatButtonEnabled}" CommandParameter="Osoby" CornerRadius="20">
                 <Button.ImageSource>
                     <FontImageSource FontFamily="FontAwesome5Solid"
                      Color="Black"
                      Glyph="{x:Static fontAwesome:FontAwesomeIcons.Users}"/>
                 </Button.ImageSource>
             </Button>
-            <Button Text="Dodaj" Grid.Row="2" Grid.Column="2" ContentLayout="Top" Command="{Binding AddWordCommand}">
+            <Button Text="Dodaj" Grid.Row="2" Grid.Column="2" ContentLayout="Top" Command="{Binding AddWordCommand}" CornerRadius="20">
                 <Button.ImageSource>
                     <FontImageSource FontFamily="FontAwesome5Solid"
                      Color="Black"
@@ -85,38 +116,56 @@
         </Grid>
         <CollectionView Margin="0,15,0,0" IsVisible="{Binding IsFilteredWordsVisible}" ItemsSource="{Binding FilteredWords}">
             <CollectionView.ItemsLayout>
-                <GridItemsLayout Orientation="Vertical" Span="1" HorizontalItemSpacing="5" VerticalItemSpacing="5"></GridItemsLayout>
+                <GridItemsLayout Orientation="Vertical" Span="2" HorizontalItemSpacing="5" VerticalItemSpacing="5"></GridItemsLayout>
             </CollectionView.ItemsLayout>
             <CollectionView.ItemTemplate>
                 <DataTemplate>
                     <SwipeView>
                         <SwipeView.RightItems>
                             <SwipeItems Mode="Execute">
-                                <SwipeItemView BackgroundColor="Red"
-                                    Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:MainPageViewModel}}, Path=TestTTSCommand}">
+                                <SwipeItemView BackgroundColor="IndianRed"
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:MainPageViewModel}}, Path=DeleteWordCommand}"
+                                               CommandParameter="{Binding .}">
                                     <Label Text="{x:Static fontAwesome:FontAwesomeIcons.TrashAlt}" FontFamily="FontAwesome5Solid" TextColor="Black"
-                                           VerticalOptions="CenterAndExpand" FontSize="Large" Padding="30"/>
+                                           VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand"  FontSize="Medium" Padding="20"/>
                                 </SwipeItemView>
                             </SwipeItems>
                         </SwipeView.RightItems>
 
                         <SwipeView.LeftItems>
                             <SwipeItems Mode="Execute">
-                                <SwipeItemView BackgroundColor="Yellow"
+                                <SwipeItemView BackgroundColor="LightGreen"
                                     Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:MainPageViewModel}}, Path=TestTTSCommand}">
                                     <Label Text="{x:Static fontAwesome:FontAwesomeIcons.Edit}" FontFamily="FontAwesome5Solid" TextColor="Black"
-                                           VerticalOptions="CenterAndExpand" FontSize="Medium" Padding="30"/>
+                                           VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" FontSize="Medium" Padding="20"/>
                                 </SwipeItemView>
                             </SwipeItems>
                         </SwipeView.LeftItems>
 
-                        <Frame CornerRadius="20" HasShadow="False" BackgroundColor="White" BorderColor="Black" HeightRequest="80" Padding="0">
-                            <Button Text="{Binding Description}" TextColor="Black" CornerRadius="20"
-                                    Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:MainPageViewModel}}, Path=TestTTSCommand}"/>
+                        <Frame CornerRadius="20" HasShadow="True" BackgroundColor="White" HeightRequest="80" Padding="10" BorderColor="LightGray">
+                            <StackLayout>
+                                <Image Source="{Binding ImageUrl}" HeightRequest="65" Margin="0"/>
+                                <Label Text="{Binding Description}" TextColor="Black" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" FontSize="Small"
+                                   InputTransparent="True" Margin="0"/>
+                            </StackLayout>
                         </Frame>
+
+                        <SwipeView.GestureRecognizers>
+                            <TapGestureRecognizer NumberOfTapsRequired="2" Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:MainPageViewModel}}, Path=TapTestCommand}"
+                                                      CommandParameter="{Binding .}">
+                            </TapGestureRecognizer>
+                        </SwipeView.GestureRecognizers>
                     </SwipeView>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
+            <CollectionView.EmptyView>
+                <StackLayout Padding="10" HeightRequest="100">
+                    <Frame HasShadow="True" BackgroundColor="White" CornerRadius="20">
+                        <Label Text="Nie dodano żadnego słowa w danej kategorii :(" FontSize="Large"
+                       HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" TextColor="Black"></Label>
+                    </Frame>
+                </StackLayout>
+            </CollectionView.EmptyView>
             <CollectionView.Footer>
                 <StackLayout>
                     <Button Command="{Binding CloseFilteredWordsCommand}" BackgroundColor="Transparent">

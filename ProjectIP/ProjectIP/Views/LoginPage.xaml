@@ -9,8 +9,8 @@
     <StackLayout HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand">
         <Entry Placeholder="Email" Text="{Binding Email}" WidthRequest="250"/>
         <Entry Placeholder="Hasło" Text="{Binding Password}" IsPassword="True" WidthRequest="250"/>
-        <Button Text="Zaloguj" Command="{Binding LoginCommand}"/>
+        <Button Text="Zaloguj" Command="{Binding LoginCommand}" CornerRadius="20"/>
         <Label Text="lub" HorizontalOptions="CenterAndExpand"/>
-        <Button Text="Zarejestruj się" Command="{Binding NavigateToRegisterCommand}"/>
+        <Button Text="Zarejestruj się" Command="{Binding NavigateToRegisterCommand}" CornerRadius="20"/>
     </StackLayout>
 </ContentPage>

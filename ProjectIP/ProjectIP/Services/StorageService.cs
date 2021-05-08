@@ -25,14 +25,20 @@ namespace ProjectIP.Services
             await StorageClient.Child("users").Child(uid).Child(filename).PutAsync(stream);
         }
 
-        public async Task DeleteFile(string path)
+        public async Task<bool> DeleteFile(string path)
         {
-            throw new NotImplementedException();
+            if (path.Contains("shared"))
+            {
+                return false;
+            }
+            await StorageClient.Child(path).DeleteAsync();
+            return true;
         }
 
-        public async Task<string> GetFileUrl(string path)
+        public async Task<string> GetFileUrl(string filename)
         {
-            throw new NotImplementedException();
+            var uid = _authenticationService.GetUid();
+            return await StorageClient.Child("users").Child(uid).Child(filename).GetDownloadUrlAsync();
         }
     }
 }

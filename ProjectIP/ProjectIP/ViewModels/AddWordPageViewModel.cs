@@ -73,18 +73,20 @@ namespace ProjectIP.ViewModels
         public IAuthenticationService _authenticationService { get; private set; }
         public IPermissions _permissions { get; private set; }
         public IDatabaseService _databaseService { get; private set; }
+        public IStorageService _storageService { get; private set; }
         public IUserDialogs _userDialogsService { get; private set; }
         public IMediaPicker _mediaPickerService { get; private set; }
         #endregion
 
         public AddWordPageViewModel(INavigationService navigationService, IAuthenticationService authenticationService, 
-            IPermissions permissions, IUserDialogs userDialogsService, IDatabaseService databaseService, IMediaPicker mediaPicker) : base (navigationService)
+            IPermissions permissions, IUserDialogs userDialogsService, IDatabaseService databaseService, IMediaPicker mediaPicker, IStorageService storageService) : base (navigationService)
         {
             _userDialogsService = userDialogsService;
             _authenticationService = authenticationService;
             _permissions = permissions;
             _mediaPickerService = mediaPicker;
             _databaseService = databaseService;
+            _storageService = storageService;
             ShowPickerCommand = new DelegateCommand(async () => await OpenFilePickerAsync());
             SaveWordCommmand = new DelegateCommand(async () => await SaveWord());
             GoBackCommand = new DelegateCommand(async () => await GoBack());
@@ -120,23 +122,21 @@ namespace ProjectIP.ViewModels
 
         private async Task SaveWord()
         {
+            //TODO w nazwie nie moze byc shared
+
             var uid = _authenticationService.GetUid();
-           //TODO zrobic serwis dla firebase storage i realtime database
+            _userDialogsService.ShowLoading("Trwa zapis zdjęcia...");
+            await _storageService.AddFile(ImageBytes, FileName);
+            var imageUrl = await _storageService.GetFileUrl(FileName);
             var wordToSave = new Word()
             {
                 ImageName = FileName,
-                ImagePath = $"/users/{uid}/{FileName}",
+                ImagePath = $"users/{uid}/{FileName}",
                 Description = Description,
-                Category = Category
+                Category = Category,
+                ImageUrl = imageUrl
             };
-            
-            var stream = new MemoryStream(ImageBytes);
-            var storage = new FirebaseStorage("projekt-ip.appspot.com",
-                new FirebaseStorageOptions { AuthTokenAsyncFactory = async () => await _authenticationService.GetToken() });
-            
-            _userDialogsService.ShowLoading("Trwa zapis zdjęcia...");
             await _databaseService.AddWord(wordToSave);
-            await storage.Child("users").Child(uid).Child(FileName).PutAsync(stream);
             _userDialogsService.HideLoading();
             await NavigationService.GoBackAsync();
         }

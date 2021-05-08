@@ -23,14 +23,16 @@ namespace ProjectIP.Services
         public async Task AddWord(Word newWord)
         {
             var uid = _authenticationService.GetUid();
-            await DbClient.Child("word").Child(uid).Child(newWord.Description).PutAsync(newWord);
+            var newWordRef = await DbClient.Child("word").Child(uid).PostAsync(newWord);
+            await DbClient.Child("word").Child(uid).Child(newWordRef.Key).PatchAsync(new { ID = newWordRef.Key });
         }
 
-        public async Task DeleteWord(string path)
+        public async Task DeleteWord(Word word)
         {
             //TODO sprawdzać obiekt usuwany tylko z poddrzewa prywatnego 
             //if path not contains shared --> nie usuwaj 
-            throw new NotImplementedException();
+            var uid = _authenticationService.GetUid();
+            await DbClient.Child("word").Child(uid).Child(word.ID).DeleteAsync();
         }
 
         public async Task EditWord(string path)

@@ -10,10 +10,10 @@
     </ContentPage.ToolbarItems>
     <ScrollView>
         <StackLayout HorizontalOptions="CenterAndExpand" VerticalOptions="StartAndExpand">
-            <Frame WidthRequest="250" HeightRequest="250" BackgroundColor="WhiteSmoke" BorderColor="Gray" Margin="5,45">
+            <Frame WidthRequest="250" HeightRequest="250" BackgroundColor="WhiteSmoke" BorderColor="Gray" Margin="5,45" CornerRadius="20">
                 <Image Source="{Binding Image}"/>
             </Frame>
-            <Button Text="Wybierz zdjęcie" Command="{Binding ShowPickerCommand}" WidthRequest="250"/>
+            <Button Text="Wybierz zdjęcie" Command="{Binding ShowPickerCommand}" WidthRequest="250" CornerRadius="20"/>
             <Entry Placeholder="Opis zdjęcia" Text="{Binding Description}" WidthRequest="250"/>
             <Picker x:Name="picker"
                 Title="Kategoria zdjęcia" SelectedItem="{Binding Category}">   
@@ -30,7 +30,7 @@
                     </x:Array>
                 </Picker.ItemsSource>
             </Picker>
-            <Button Text="Dodaj słowo" Command="{Binding SaveWordCommmand}" WidthRequest="250"/>
+            <Button Text="Dodaj słowo" Command="{Binding SaveWordCommmand}" WidthRequest="250" CornerRadius="20"/>
         </StackLayout>
     </ScrollView>
     

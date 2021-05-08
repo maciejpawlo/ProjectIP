@@ -8,7 +8,7 @@ namespace ProjectIP.Interfaces
     public interface IStorageService
     {
         Task AddFile(byte[] fileByteArray, string filename);
-        Task DeleteFile(string path);
-        Task<string> GetFileUrl(string path);
+        Task<bool> DeleteFile(string path);
+        Task<string> GetFileUrl(string filename);
     }
 }
