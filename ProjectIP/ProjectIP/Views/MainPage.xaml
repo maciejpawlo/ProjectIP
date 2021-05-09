@@ -135,7 +135,8 @@
                         <SwipeView.LeftItems>
                             <SwipeItems Mode="Execute">
                                 <SwipeItemView BackgroundColor="LightGreen"
-                                    Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:MainPageViewModel}}, Path=TestTTSCommand}">
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:MainPageViewModel}}, Path=EditWordCommand}"
+                                               CommandParameter="{Binding .}">
                                     <Label Text="{x:Static fontAwesome:FontAwesomeIcons.Edit}" FontFamily="FontAwesome5Solid" TextColor="Black"
                                            VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" FontSize="Medium" Padding="20"/>
                                 </SwipeItemView>

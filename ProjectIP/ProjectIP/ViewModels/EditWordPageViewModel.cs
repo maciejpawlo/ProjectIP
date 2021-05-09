@@ -1,6 +1,4 @@
-﻿using Firebase.Database;
-using Firebase.Database.Query;
-using Firebase.Storage;
+﻿using Acr.UserDialogs;
 using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Navigation;
@@ -11,55 +9,50 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Xamarin.Essentials;
 using Xamarin.Essentials.Interfaces;
 using Xamarin.Forms;
-using Acr.UserDialogs;
 
 namespace ProjectIP.ViewModels
 {
-    public class AddWordPageViewModel : ViewModelBase
+    public class EditWordPageViewModel : ViewModelBase
     {
         #region Commands
+        public DelegateCommand EditWordCommand { get; set; }
+        public DelegateCommand GoBackCommand { get; set; }
         public DelegateCommand ShowPickerCommand { get; set; }
         public DelegateCommand SaveWordCommmand { get; set; }
-        public DelegateCommand GoBackCommand { get; set; }
         #endregion
 
         #region Props
-        private ImageSource _image;
-        public ImageSource Image
+        private Word _wordToEdit;
+        public Word WordToEdit
         {
-            get { return _image; }
-            set { SetProperty(ref _image, value); }
+            get { return _wordToEdit; }
+            set { SetProperty(ref _wordToEdit, value); }
         }
-
-        private Stream _imageStream;
-        public Stream ImageStream
-        {
-            get { return _imageStream; }
-            set { SetProperty(ref _imageStream, value); }
-        }
-
-        private string _fileName;
-        public string FileName
-        {
-            get { return _fileName; }
-            set { SetProperty(ref _fileName, value); }
-        }
-
         private string _description;
         public string Description
         {
             get { return _description; }
             set { SetProperty(ref _description, value); }
         }
-
         private string _category;
         public string Category
         {
             get { return _category; }
             set { SetProperty(ref _category, value); }
+        }
+        private ImageSource _image;
+        public ImageSource Image
+        {
+            get { return _image; }
+            set { SetProperty(ref _image, value); }
+        }
+        private string _fileName;
+        public string FileName
+        {
+            get { return _fileName; }
+            set { SetProperty(ref _fileName, value); }
         }
         private byte[] _imageBytes;
         public byte[] ImageBytes
@@ -67,31 +60,40 @@ namespace ProjectIP.ViewModels
             get { return _imageBytes; }
             set { SetProperty(ref _imageBytes, value); }
         }
+        private Stream _imageStream;
+        public Stream ImageStream
+        {
+            get { return _imageStream; }
+            set { SetProperty(ref _imageStream, value); }
+        }
         #endregion
 
-        #region Services
-        public IAuthenticationService _authenticationService { get; private set; }
-        public IPermissions _permissions { get; private set; }
+        #region Services 
         public IDatabaseService _databaseService { get; private set; }
         public IStorageService _storageService { get; private set; }
-        public IUserDialogs _userDialogsService { get; private set; }
         public IMediaPicker _mediaPickerService { get; private set; }
+        public IUserDialogs _userDialogsService { get; private set; }
+        public IAuthenticationService _authenticationService { get; private set; }
         #endregion
 
-        public AddWordPageViewModel(INavigationService navigationService, IAuthenticationService authenticationService, 
-            IPermissions permissions, IUserDialogs userDialogsService, IDatabaseService databaseService, IMediaPicker mediaPicker, IStorageService storageService) : base (navigationService)
+        public EditWordPageViewModel(INavigationService navigationService, IDatabaseService databaseService, IStorageService storageService,
+            IMediaPicker mediaPicker, IUserDialogs userDialogs, IAuthenticationService authenticationService) : base(navigationService)
         {
-            _userDialogsService = userDialogsService;
-            _authenticationService = authenticationService;
-            _permissions = permissions;
-            _mediaPickerService = mediaPicker;
             _databaseService = databaseService;
             _storageService = storageService;
+            _mediaPickerService = mediaPicker;
+            _userDialogsService = userDialogs;
+            _authenticationService = authenticationService;
 
+            GoBackCommand = new DelegateCommand(async () => await GoBack());
             ShowPickerCommand = new DelegateCommand(async () => await OpenFilePickerAsync());
             SaveWordCommmand = new DelegateCommand(async () => await SaveWord());
-            GoBackCommand = new DelegateCommand(async () => await GoBack());
-            Title = "Dodaj nowe słowo";
+            Title = "Edytuj słowo";
+        }
+
+        private async Task GoBack()
+        {
+            await NavigationService.GoBackAsync();
         }
 
         private async Task OpenFilePickerAsync()
@@ -111,7 +113,6 @@ namespace ProjectIP.ViewModels
                         var stream = new MemoryStream(fileByte);
                         ImageStream = stream;
                         Image = ImageSource.FromStream(() => stream);
-
                     }
                 }
             }
@@ -123,28 +124,29 @@ namespace ProjectIP.ViewModels
 
         private async Task SaveWord()
         {
-            //TODO w nazwie nie moze byc shared
-
             var uid = _authenticationService.GetUid();
             _userDialogsService.ShowLoading("Trwa zapis zdjęcia...");
-            await _storageService.AddFile(ImageBytes, FileName);
-            var imageUrl = await _storageService.GetFileUrl(FileName);
-            var wordToSave = new Word()
+            if (!string.IsNullOrEmpty(FileName))
             {
-                ImageName = FileName,
-                ImagePath = $"users/{uid}/{FileName}",
-                Description = Description,
-                Category = Category,
-                ImageUrl = imageUrl
-            };
-            await _databaseService.AddWord(wordToSave);
+                await _storageService.AddFile(ImageBytes, FileName);
+                var imageUrl = await _storageService.GetFileUrl(FileName);
+                WordToEdit.ImagePath = $"users/{uid}/{FileName}";
+                WordToEdit.ImageUrl = imageUrl;
+            }
+            WordToEdit.Category = Category;
+            WordToEdit.Description = Description;
+
+            await _databaseService.EditWord(WordToEdit);
             _userDialogsService.HideLoading();
             await NavigationService.GoBackAsync();
         }
 
-        private async Task GoBack()
+        public override void Initialize(INavigationParameters parameters)
         {
-            await NavigationService.GoBackAsync();
+            WordToEdit = parameters.GetValue<Word>("modelToEdit");
+            Description = WordToEdit.Description;
+            Category = WordToEdit.Category;
+            Image = ImageSource.FromUri(new Uri(WordToEdit.ImageUrl));
         }
     }
 }

@@ -27,18 +27,31 @@ namespace ProjectIP.Services
             await DbClient.Child("word").Child(uid).Child(newWordRef.Key).PatchAsync(new { ID = newWordRef.Key });
         }
 
-        public async Task DeleteWord(Word word)
+        public async Task<bool> DeleteWord(Word word)
         {
-            //TODO sprawdzać obiekt usuwany tylko z poddrzewa prywatnego 
-            //if path not contains shared --> nie usuwaj 
+            //sprawdzać obiekt usuwany tylko z poddrzewa prywatnego 
+            if (word.ID == null)
+            {
+                return false; //jesli ID==null -> obiekt z drzewa shared
+            }
             var uid = _authenticationService.GetUid();
             await DbClient.Child("word").Child(uid).Child(word.ID).DeleteAsync();
+            return true;
         }
 
-        public async Task EditWord(string path)
+        public async Task EditWord(Word word)
         {
-            //TODO przy edycji słowa z shared -> przepisanie na prywatne poddrzewo
-            throw new NotImplementedException();
+            //przy edycji słowa z shared -> przepisanie na prywatne poddrzewo
+            var uid = _authenticationService.GetUid();
+            if (word.ID == null) //id null jesli obiekt pochodzi z drzewa shared 
+            {
+                var newWordRef = await DbClient.Child("word").Child(uid).PostAsync(word);
+                await DbClient.Child("word").Child(uid).Child(newWordRef.Key).PatchAsync(new { ID = newWordRef.Key });
+            }
+            else //edycja zwyklego PRYWATNEGO obiektu
+            {
+                await DbClient.Child("word").Child(uid).Child(word.ID).PutAsync(word);
+            }           
         }
 
         public async Task<List<Word>> GetAllWords()

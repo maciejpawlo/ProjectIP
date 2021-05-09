@@ -9,8 +9,8 @@ namespace ProjectIP.Interfaces
     public interface IDatabaseService
     {
         Task<List<Word>> GetAllWords();
-        Task DeleteWord(Word word);
+        Task<bool> DeleteWord(Word word);
         Task AddWord(Word newWord);
-        Task EditWord(string path);
+        Task EditWord(Word editedWord);
     }
 }

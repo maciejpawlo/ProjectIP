@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:prism="http://prismlibrary.com"
+             prism:ViewModelLocator.AutowireViewModel="True"
+             x:Class="ProjectIP.Views.EditWordPage"
+             Title="{Binding Title}">
+    <ContentPage.ToolbarItems >
+        <ToolbarItem Text="Powrót" Priority="0" Order="Primary" Command="{Binding GoBackCommand}"/>
+    </ContentPage.ToolbarItems>
+    <ScrollView>
+        <StackLayout HorizontalOptions="CenterAndExpand" VerticalOptions="StartAndExpand">
+            <Frame WidthRequest="250" HeightRequest="250" BackgroundColor="WhiteSmoke" BorderColor="Gray" Margin="5,45" CornerRadius="20">
+                <Image Source="{Binding Image}"/>
+            </Frame>
+            <Button Text="Wybierz zdjęcie" Command="{Binding ShowPickerCommand}" WidthRequest="250" CornerRadius="20"/>
+            <Entry Placeholder="Opis zdjęcia" Text="{Binding Description}" WidthRequest="250"/>
+            <Picker x:Name="picker"
+                Title="Kategoria zdjęcia" SelectedItem="{Binding Category}">
+                <Picker.ItemsSource>
+                    <x:Array Type="{x:Type x:String}">
+                        <x:String>Osoby</x:String>
+                        <x:String>Jedzenie</x:String>
+                        <x:String>Zwierzęta</x:String>
+                        <x:String>Czynności</x:String>
+                        <x:String>Miejsca</x:String>
+                        <x:String>Liczby</x:String>
+                        <x:String>Emocje</x:String>
+                        <x:String>Zwroty</x:String>
+                    </x:Array>
+                </Picker.ItemsSource>
+            </Picker>
+            <Button Text="Zapisz zmiany" Command="{Binding SaveWordCommmand}" WidthRequest="250" CornerRadius="20"/>
+        </StackLayout>
+    </ScrollView>
+
+</ContentPage>

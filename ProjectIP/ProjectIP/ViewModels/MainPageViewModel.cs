@@ -31,6 +31,7 @@ namespace ProjectIP.ViewModels
         public DelegateCommand<Word> TapTestCommand { get; set; }
         public DelegateCommand<Word> DeleteWordFromSentenceCommand { get; set; }
         public DelegateCommand<Word> DeleteWordCommand { get; set; }
+        public DelegateCommand<Word> EditWordCommand { get; set; }
         #endregion
 
         #region Services
@@ -125,6 +126,7 @@ namespace ProjectIP.ViewModels
             DeleteWordFromSentenceCommand = new DelegateCommand<Word>((word) => DeleteWordFromSentence(word));
             TapTestCommand = new DelegateCommand<Word>((word) => TapTest(word));
             DeleteWordCommand = new DelegateCommand<Word>(async (word) => await DeleteWord(word));
+            EditWordCommand = new DelegateCommand<Word>(async (word) => await EditWord(word));
 
             SentenceToRead = new ObservableCollection<Word>();
             FilteredWords = new List<Word>();
@@ -153,6 +155,15 @@ namespace ProjectIP.ViewModels
             await NavigationService.NavigateAsync("NavigationPage/AddWordPage", null, true, true);
         }
 
+        private async Task EditWord(Word wordToEdit)
+        {
+            var navigationParams = new NavigationParameters
+            {
+                 { "modelToEdit",  wordToEdit}
+            };
+            await NavigationService.NavigateAsync("NavigationPage/EditWordPage", navigationParams, true, true);
+        }
+
         private async Task DeleteWord(Word word)
         {
             var resultDelete = await _userDialogsService.ConfirmAsync("Czy na pewno chcesz usunąć to słowo?", "Uwaga", "Tak", "Nie");
@@ -161,14 +172,19 @@ namespace ProjectIP.ViewModels
                 return;
             }
             _userDialogsService.ShowLoading("Trwa usuwanie...");
-            var result = await _storageService.DeleteFile(word.ImagePath);
-            if (!result)
+            var resultWord = await _databaseService.DeleteWord(word);
+            if (!resultWord)
             {
-                await _userDialogsService.AlertAsync("Nie można usunąć danego zdjęcia :(");
+                await _userDialogsService.AlertAsync("Nie można usunąć danego słowa :(");
                 _userDialogsService.HideLoading();
                 return;
             }
-            await _databaseService.DeleteWord(word);
+            var result = await _storageService.DeleteFile(word.ImagePath);
+            if (!result)
+            {
+                await _userDialogsService.AlertAsync("Nie można usunąć zdjęcia powiązanego z danym słowem :(");
+            }
+
             AllWords = await _databaseService.GetAllWords();
             GetFilteredWords(CategoryFilter);
             _userDialogsService.HideLoading();
@@ -177,7 +193,7 @@ namespace ProjectIP.ViewModels
         private void GetFilteredWords(string category)
         {
             CategoryFilter = category;
-            FilteredWords = AllWords.Where(x => x.Category == category).ToList();
+            FilteredWords = AllWords.Where(x => x.Category == CategoryFilter).ToList();
             IsCatListVisible = false;
             IsFilteredWordsVisible = true;
         }
@@ -214,6 +230,10 @@ namespace ProjectIP.ViewModels
         {
             IsCatButtonEnabled = false;
             AllWords = await _databaseService.GetAllWords();
+            if (IsFilteredWordsVisible)
+            {
+                FilteredWords = AllWords.Where(x => x.Category == CategoryFilter).ToList();
+            }
             IsCatButtonEnabled = true;
         }
 
