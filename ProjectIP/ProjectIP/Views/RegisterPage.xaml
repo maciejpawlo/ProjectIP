@@ -2,6 +2,8 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:prism="http://prismlibrary.com"
+             xmlns:behaviors="clr-namespace:ProjectIP.Helpers"
+             xmlns:ioc="clr-namespace:Prism.Ioc;assembly=Prism.Forms"
              prism:ViewModelLocator.AutowireViewModel="True"
              x:Class="ProjectIP.Views.RegisterPage"
              Title="{Binding Title}">
@@ -9,8 +11,23 @@
         <ToolbarItem Text="Powrót" Priority="0" Order="Primary" Command="{Binding GoBackCommand}"/>
     </ContentPage.ToolbarItems>
     <StackLayout HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand">
-        <Entry Placeholder="Email" Text="{Binding Email}" WidthRequest="250"/>
-        <Entry Placeholder="Hasło" Text="{Binding Password}" IsPassword="True" WidthRequest="250"/>
-        <Button Text="Załóż konto" Command="{Binding RegisterCommand}"/>
+        <Label Text="Nieprawidłowy adres email" TextColor="Red" IsVisible="{Binding IsEmailErrorVisible}"/>
+        <Entry Placeholder="Email" Text="{Binding Email}" WidthRequest="250">
+            <Entry.Behaviors>
+                <behaviors:EmailValidationBehavior IsValid="{Binding IsValidEmail}"/>
+                <prism:EventToCommandBehavior EventName="TextChanged"
+                                              Command="{Binding EmailTextChangedCommand}"/>
+            </Entry.Behaviors>
+        </Entry>
+        <Label Text="Hasło powinno zawierać:&#10; - wielką literę,&#10; - cyfrę&#10; - mieć długość minimum 8 znaków" TextColor="Red"
+               IsVisible="{Binding IsPasswordErrorVisible}"/>
+        <Entry Placeholder="Hasło" Text="{Binding Password}" IsPassword="True" WidthRequest="250">
+            <Entry.Behaviors>
+                <behaviors:PasswordValidatorBehavior IsValid="{Binding IsValidPassword}"/>
+                <prism:EventToCommandBehavior EventName="TextChanged"
+                                              Command="{Binding PasswordTextChangedCommand}"/>
+            </Entry.Behaviors>
+        </Entry>
+        <Button Text="Załóż konto" Command="{Binding RegisterCommand}" CornerRadius="20" IsEnabled="{Binding IsFormValid}"/>
     </StackLayout>
 </ContentPage>

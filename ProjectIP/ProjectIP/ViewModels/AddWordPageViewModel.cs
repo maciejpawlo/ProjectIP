@@ -71,7 +71,6 @@ namespace ProjectIP.ViewModels
 
         #region Services
         public IAuthenticationService _authenticationService { get; private set; }
-        public IPermissions _permissions { get; private set; }
         public IDatabaseService _databaseService { get; private set; }
         public IStorageService _storageService { get; private set; }
         public IUserDialogs _userDialogsService { get; private set; }
@@ -79,11 +78,10 @@ namespace ProjectIP.ViewModels
         #endregion
 
         public AddWordPageViewModel(INavigationService navigationService, IAuthenticationService authenticationService, 
-            IPermissions permissions, IUserDialogs userDialogsService, IDatabaseService databaseService, IMediaPicker mediaPicker, IStorageService storageService) : base (navigationService)
+           IUserDialogs userDialogsService, IDatabaseService databaseService, IMediaPicker mediaPicker, IStorageService storageService) : base (navigationService)
         {
             _userDialogsService = userDialogsService;
             _authenticationService = authenticationService;
-            _permissions = permissions;
             _mediaPickerService = mediaPicker;
             _databaseService = databaseService;
             _storageService = storageService;

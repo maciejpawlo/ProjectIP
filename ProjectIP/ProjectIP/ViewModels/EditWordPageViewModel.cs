@@ -125,9 +125,10 @@ namespace ProjectIP.ViewModels
         private async Task SaveWord()
         {
             var uid = _authenticationService.GetUid();
-            _userDialogsService.ShowLoading("Trwa zapis zdjęcia...");
+            _userDialogsService.ShowLoading("Trwa zapis słowa...");
             if (!string.IsNullOrEmpty(FileName))
             {
+                //TODO usuwanie starego zdjecia
                 await _storageService.AddFile(ImageBytes, FileName);
                 var imageUrl = await _storageService.GetFileUrl(FileName);
                 WordToEdit.ImagePath = $"users/{uid}/{FileName}";

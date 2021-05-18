@@ -2,14 +2,30 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:prism="http://prismlibrary.com"
+             xmlns:behaviors="clr-namespace:ProjectIP.Helpers"
+             xmlns:ioc="clr-namespace:Prism.Ioc;assembly=Prism.Forms"
              prism:ViewModelLocator.AutowireViewModel="True"
              x:Class="ProjectIP.Views.LoginPage"
              Title="{Binding Title}">
-    
+
     <StackLayout HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand">
-        <Entry Placeholder="Email" Text="{Binding Email}" WidthRequest="250"/>
-        <Entry Placeholder="Hasło" Text="{Binding Password}" IsPassword="True" WidthRequest="250"/>
-        <Button Text="Zaloguj" Command="{Binding LoginCommand}" CornerRadius="20"/>
+        <Label Text="Nieprawidłowy adres email" TextColor="Red" IsVisible="{Binding IsEmailErrorVisible}"/>
+        <Entry Placeholder="Email" Text="{Binding Email}" WidthRequest="250">
+            <Entry.Behaviors>
+                <behaviors:EmailValidationBehavior IsValid="{Binding IsValidEmail}"/>
+                <prism:EventToCommandBehavior EventName="TextChanged"
+                                              Command="{Binding EmailTextChangedCommand}"/>
+            </Entry.Behaviors>
+        </Entry>
+        <Label Text="Pole wymagane" TextColor="Red" IsVisible="{Binding IsPasswordErrorVisible}"/>
+        <Entry Placeholder="Hasło" Text="{Binding Password}" IsPassword="True" WidthRequest="250">
+            <Entry.Behaviors>
+                <behaviors:EmptyEntryValidatorBehavior IsValid="{Binding IsValidPassword}"/>
+                <prism:EventToCommandBehavior EventName="TextChanged"
+                                              Command="{Binding PasswordTextChangedCommand}"/>
+            </Entry.Behaviors>
+        </Entry>
+        <Button Text="Zaloguj" Command="{Binding LoginCommand}" CornerRadius="20" IsEnabled="{Binding IsFormValid}"/>
         <Label Text="lub" HorizontalOptions="CenterAndExpand"/>
         <Button Text="Zarejestruj się" Command="{Binding NavigateToRegisterCommand}" CornerRadius="20"/>
     </StackLayout>

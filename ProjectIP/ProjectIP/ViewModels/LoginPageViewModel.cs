@@ -28,11 +28,43 @@ namespace ProjectIP.ViewModels
             get { return _password; }
             set { SetProperty(ref _password, value); }
         }
+        private bool _isValidEmail;
+        public bool IsValidEmail
+        {
+            get { return _isValidEmail; }
+            set { SetProperty(ref _isValidEmail, value); }
+        }
+        private bool _isValidPassword;
+        public bool IsValidPassword
+        {
+            get { return _isValidPassword; }
+            set { SetProperty(ref _isValidPassword, value); }
+        }
+        private bool _isEmailErrorVisible;
+        public bool IsEmailErrorVisible
+        {
+            get { return _isEmailErrorVisible; }
+            set { SetProperty(ref _isEmailErrorVisible, value); }
+        }
+        private bool _isPasswordErrorVisible;
+        public bool IsPasswordErrorVisible
+        {
+            get { return _isPasswordErrorVisible; }
+            set { SetProperty(ref _isPasswordErrorVisible, value); }
+        }
+        private bool _isFormValid;
+        public bool IsFormValid
+        {
+            get { return _isFormValid; }
+            set { SetProperty(ref _isFormValid, value); }
+        }
         #endregion
 
         #region Commands
         public DelegateCommand LoginCommand { get; set; }
         public DelegateCommand NavigateToRegisterCommand { get; set; }
+        public DelegateCommand EmailTextChangedCommand { get; set; }
+        public DelegateCommand PasswordTextChangedCommand { get; set; }
         #endregion
 
         #region Services
@@ -46,6 +78,9 @@ namespace ProjectIP.ViewModels
             _dialogService = dialogService;
             LoginCommand = new DelegateCommand(async () => await Login());
             NavigateToRegisterCommand = new DelegateCommand(async () => await NavigateToRegister());
+            EmailTextChangedCommand = new DelegateCommand(OnEmailTextChanged);
+            PasswordTextChangedCommand = new DelegateCommand(OnPasswordTextChanged);
+            IsEmailErrorVisible = false;
             Title = "Zaloguj się";
         }
 
@@ -61,6 +96,18 @@ namespace ProjectIP.ViewModels
             }
             //navigate to mainpage
             await NavigationService.NavigateAsync("app:///NavigationPage/MainPage");
+        }
+
+        private void OnEmailTextChanged() //tu zmieniana jest widocznosc bledow zwiazanych z walidacja emaila
+        {
+            IsEmailErrorVisible = !IsValidEmail;
+            IsFormValid = IsValidEmail && IsValidPassword;
+        }
+
+        private void OnPasswordTextChanged() //tu zmieniana jest widocznosc bledow zwiazanych z walidacja hasla
+        {
+            IsPasswordErrorVisible = !IsValidPassword;
+            IsFormValid = IsValidEmail && IsValidPassword;
         }
 
         private async Task NavigateToRegister()
