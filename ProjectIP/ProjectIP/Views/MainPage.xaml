@@ -38,7 +38,7 @@
             </StackLayout>
         </Frame>
         
-        <Grid ColumnDefinitions="3*,3*,3*" RowDefinitions="80,80,80" Margin="0,15,0,0" IsVisible="{Binding IsCatListVisible}">
+        <Grid ColumnDefinitions="3*,3*,3*" RowDefinitions="80,80,80,80" Margin="0,15,0,0" IsVisible="{Binding IsCatListVisible}">
             <!--1st row-->
             <Button Text="Zwierzęta" Grid.Row="0" Grid.Column="0" ContentLayout="Top" Command="{Binding FilterWordsCommand}"
                     IsEnabled="{Binding IsCatButtonEnabled}" CommandParameter="Zwierzęta" CornerRadius="20">
@@ -106,7 +106,32 @@
                      Glyph="{x:Static fontAwesome:FontAwesomeIcons.Users}"/>
                 </Button.ImageSource>
             </Button>
-            <Button Text="Dodaj" Grid.Row="2" Grid.Column="2" ContentLayout="Top" Command="{Binding AddWordCommand}" CornerRadius="20">
+            <Button Text="Liczby" Grid.Row="2" Grid.Column="2" ContentLayout="Top" Command="{Binding FilterWordsCommand}"
+                    IsEnabled="{Binding IsCatButtonEnabled}" CommandParameter="Liczby" CornerRadius="20">
+                <Button.ImageSource>
+                    <FontImageSource FontFamily="FontAwesome5Solid"
+                     Color="Black"
+                     Glyph="{x:Static fontAwesome:FontAwesomeIcons.SortNumericUp}"/>
+                </Button.ImageSource>
+            </Button>
+            <!--4th row-->
+            <Button Text="Czas" Grid.Row="3" Grid.Column="0" ContentLayout="Top" Command="{Binding FilterWordsCommand}"
+                    IsEnabled="{Binding IsCatButtonEnabled}" CommandParameter="Czas" CornerRadius="20">
+                <Button.ImageSource>
+                    <FontImageSource FontFamily="FontAwesome5Solid"
+                     Color="Black"
+                     Glyph="{x:Static fontAwesome:FontAwesomeIcons.Clock}"/>
+                </Button.ImageSource>
+            </Button>
+            <Button Text="Inne" Grid.Row="3" Grid.Column="1" ContentLayout="Top" Command="{Binding FilterWordsCommand}"
+                    IsEnabled="{Binding IsCatButtonEnabled}" CommandParameter="Inne" CornerRadius="20">
+                <Button.ImageSource>
+                    <FontImageSource FontFamily="FontAwesome5Solid"
+                     Color="Black"
+                     Glyph="{x:Static fontAwesome:FontAwesomeIcons.EllipsisH}"/>
+                </Button.ImageSource>
+            </Button>
+            <Button Text="Dodaj" Grid.Row="3" Grid.Column="2" ContentLayout="Top" Command="{Binding AddWordCommand}" CornerRadius="20">
                 <Button.ImageSource>
                     <FontImageSource FontFamily="FontAwesome5Solid"
                      Color="Black"

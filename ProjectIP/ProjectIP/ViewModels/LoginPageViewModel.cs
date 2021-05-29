@@ -1,4 +1,5 @@
 ﻿
+using Acr.UserDialogs;
 using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Navigation;
@@ -69,13 +70,14 @@ namespace ProjectIP.ViewModels
 
         #region Services
         public IAuthenticationService _authenticationService { get; private set; }
-        public IPageDialogService _dialogService { get; private set; }
+        public IUserDialogs _userDialogsService { get; set; }
         #endregion
 
-        public LoginPageViewModel(INavigationService navigationService, IAuthenticationService authenticationService, IPageDialogService dialogService) : base(navigationService)
+        public LoginPageViewModel(INavigationService navigationService, IAuthenticationService authenticationService,
+            IUserDialogs userDialogsService) : base(navigationService)
         {
             _authenticationService = authenticationService;
-            _dialogService = dialogService;
+            _userDialogsService = userDialogsService;
             LoginCommand = new DelegateCommand(async () => await Login());
             NavigateToRegisterCommand = new DelegateCommand(async () => await NavigateToRegister());
             EmailTextChangedCommand = new DelegateCommand(OnEmailTextChanged);
@@ -86,16 +88,22 @@ namespace ProjectIP.ViewModels
 
         private async Task Login()
         {
-            //TODO walidacja
-            string token = await _authenticationService.LoginWithEmailAndPassword(Email, Password);
-
-            if (String.IsNullOrEmpty(token))
+            //walidacja
+            string token = null;
+            if (IsFormValid)
             {
-                await _dialogService.DisplayAlertAsync("Coś poszło nie tak :(", "Podany email lub hasło są nieprawidłowe.", "OK");
+                 token = await _authenticationService.LoginWithEmailAndPassword(Email, Password);
+            }
+
+            if (string.IsNullOrEmpty(token))
+            {
+                await _userDialogsService.AlertAsync("Podany email lub hasło są nieprawidłowe.", "Coś poszło nie tak :(", "OK");
                 return;
             }
             //navigate to mainpage
+            _userDialogsService.ShowLoading("Ładowanie...");
             await NavigationService.NavigateAsync("app:///NavigationPage/MainPage");
+            _userDialogsService.HideLoading();
         }
 
         private void OnEmailTextChanged() //tu zmieniana jest widocznosc bledow zwiazanych z walidacja emaila

@@ -23,10 +23,12 @@
                         <x:String>Jedzenie</x:String>
                         <x:String>Zwierzęta</x:String>
                         <x:String>Czynności</x:String>
+                        <x:String>Czas</x:String>
                         <x:String>Miejsca</x:String>
                         <x:String>Liczby</x:String>
                         <x:String>Emocje</x:String>
                         <x:String>Zwroty</x:String>
+                        <x:String>Inne</x:String>
                     </x:Array>
                 </Picker.ItemsSource>
             </Picker>

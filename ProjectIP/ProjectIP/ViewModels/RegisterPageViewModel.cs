@@ -1,4 +1,5 @@
-﻿using Prism.Commands;
+﻿using Acr.UserDialogs;
+using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Navigation;
 using Prism.Services;
@@ -68,14 +69,15 @@ namespace ProjectIP.ViewModels
 
         #region Services
         public IAuthenticationService _authenticationService { get; private set; }
-        public IPageDialogService _dialogService { get; private set; }
+        public IUserDialogs _userDialogsService { get; private set; }
         #endregion
 
         public RegisterPageViewModel(INavigationService navigationService, IAuthenticationService authenticationService,
-            IPageDialogService dialogService) : base(navigationService)
+            IUserDialogs userDialogsService) : base(navigationService)
         {
             _authenticationService = authenticationService;
-            _dialogService = dialogService;
+            _userDialogsService = userDialogsService;
+            Title = "Zarejestruj się";
             RegisterCommand = new DelegateCommand(async () => await Register());
             GoBackCommand = new DelegateCommand(async () => await GoBack());
             EmailTextChangedCommand = new DelegateCommand(OnEmailTextChanged);
@@ -84,12 +86,15 @@ namespace ProjectIP.ViewModels
 
         private async Task Register()
         {
-            //TODO walidacja
-            string token = await _authenticationService.RegisterWithEmailAndPassword(Email, Password);
+            string token = null;
+            if (IsFormValid)
+            {
+                token = await _authenticationService.RegisterWithEmailAndPassword(Email, Password);
+            }
 
             if (string.IsNullOrEmpty(token))
             {
-                await _dialogService.DisplayAlertAsync("Coś poszło nie tak :(", "Podany email lub hasło są nieprawidłowe.", "OK");
+                await _userDialogsService.AlertAsync("Podany email lub hasło są nieprawidłowe.", "Coś poszło nie tak :(", "OK");
                 return;
             }
             //navigate to login page
