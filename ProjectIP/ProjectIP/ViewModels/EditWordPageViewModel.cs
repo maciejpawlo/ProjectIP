@@ -21,6 +21,7 @@ namespace ProjectIP.ViewModels
         public DelegateCommand GoBackCommand { get; set; }
         public DelegateCommand ShowPickerCommand { get; set; }
         public DelegateCommand SaveWordCommmand { get; set; }
+        public DelegateCommand ValidateFormCommand { get; set; }
         #endregion
 
         #region Props
@@ -66,6 +67,18 @@ namespace ProjectIP.ViewModels
             get { return _imageStream; }
             set { SetProperty(ref _imageStream, value); }
         }
+        private bool _isFormValid;
+        public bool IsFormValid
+        {
+            get { return _isFormValid; }
+            set { SetProperty(ref _isFormValid, value); }
+        }
+        private bool _isDescValid;
+        public bool IsDescValid
+        {
+            get { return _isDescValid; }
+            set { SetProperty(ref _isDescValid, value); }
+        }
         #endregion
 
         #region Services 
@@ -88,6 +101,8 @@ namespace ProjectIP.ViewModels
             GoBackCommand = new DelegateCommand(async () => await GoBack());
             ShowPickerCommand = new DelegateCommand(async () => await OpenFilePickerAsync());
             SaveWordCommmand = new DelegateCommand(async () => await SaveWord());
+            ValidateFormCommand = new DelegateCommand(ValidateForm);
+
             Title = "Edytuj słowo";
         }
 
@@ -148,6 +163,10 @@ namespace ProjectIP.ViewModels
             Description = WordToEdit.Description;
             Category = WordToEdit.Category;
             Image = ImageSource.FromUri(new Uri(WordToEdit.ImageUrl));
+        }
+        private void ValidateForm()
+        {
+            IsFormValid = IsDescValid;
         }
     }
 }

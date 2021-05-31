@@ -1,7 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:prism="http://prismlibrary.com"
+             xmlns:prism="http://prismlibrary.com" 
+             xmlns:behaviors="clr-namespace:ProjectIP.Helpers"
              prism:ViewModelLocator.AutowireViewModel="True"
              x:Class="ProjectIP.Views.AddWordPage"
              Title="{Binding Title}">
@@ -11,10 +12,21 @@
     <ScrollView>
         <StackLayout HorizontalOptions="CenterAndExpand" VerticalOptions="StartAndExpand">
             <Frame WidthRequest="250" HeightRequest="250" BackgroundColor="WhiteSmoke" BorderColor="Gray" Margin="5,45" CornerRadius="20">
-                <Image Source="{Binding Image}"/>
+                <Image Source="{Binding Image}" >
+                    <Image.Behaviors>
+                        <!--<prism:EventToCommandBehavior EventName="PropertyChanged"
+                                              Command="{Binding ValidateFormCommand}"/>-->
+                    </Image.Behaviors>
+                </Image>
             </Frame>
             <Button Text="Wybierz zdjęcie" Command="{Binding ShowPickerCommand}" WidthRequest="250" CornerRadius="20"/>
-            <Entry Placeholder="Opis zdjęcia" Text="{Binding Description}" WidthRequest="250"/>
+            <Entry Placeholder="Opis zdjęcia" Text="{Binding Description}" WidthRequest="250">
+                <Entry.Behaviors>
+                    <behaviors:EmptyEntryValidatorBehavior IsValid="{Binding IsDescValid}"/>
+                    <prism:EventToCommandBehavior EventName="TextChanged"
+                                              Command="{Binding ValidateFormCommand}"/>
+                </Entry.Behaviors>
+            </Entry>
             <Picker x:Name="picker"
                 Title="Kategoria zdjęcia" SelectedItem="{Binding Category}">   
                 <Picker.ItemsSource>
@@ -31,8 +43,13 @@
                         <x:String>Inne</x:String>
                     </x:Array>
                 </Picker.ItemsSource>
+                <Picker.Behaviors>
+                    <behaviors:EmptyPickerValidatorBehavior IsValid="{Binding IsPickerValid}"/>
+                    <prism:EventToCommandBehavior EventName="SelectedIndexChanged"
+                                              Command="{Binding ValidateFormCommand}"/>
+                </Picker.Behaviors>
             </Picker>
-            <Button Text="Dodaj słowo" Command="{Binding SaveWordCommmand}" WidthRequest="250" CornerRadius="20"/>
+            <Button Text="Dodaj słowo" Command="{Binding SaveWordCommmand}" IsEnabled="{Binding IsFormValid}" WidthRequest="250" CornerRadius="20"/>
         </StackLayout>
     </ScrollView>
     

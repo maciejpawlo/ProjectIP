@@ -24,6 +24,7 @@ namespace ProjectIP.ViewModels
         public DelegateCommand ShowPickerCommand { get; set; }
         public DelegateCommand SaveWordCommmand { get; set; }
         public DelegateCommand GoBackCommand { get; set; }
+        public DelegateCommand ValidateFormCommand { get; set; }
         #endregion
 
         #region Props
@@ -67,6 +68,26 @@ namespace ProjectIP.ViewModels
             get { return _imageBytes; }
             set { SetProperty(ref _imageBytes, value); }
         }
+
+        private bool _isFormValid;
+        public bool IsFormValid
+        {
+            get { return _isFormValid; }
+            set { SetProperty(ref _isFormValid, value); }
+        }
+        private bool _isDescValid;
+        public bool IsDescValid
+        {
+            get { return _isDescValid; }
+            set { SetProperty(ref _isDescValid, value); }
+        }
+        private bool _isPickerValid;
+        public bool IsPickerValid
+        {
+            get { return _isPickerValid; }
+            set { SetProperty(ref _isPickerValid, value);}
+        }
+
         #endregion
 
         #region Services
@@ -89,6 +110,7 @@ namespace ProjectIP.ViewModels
             ShowPickerCommand = new DelegateCommand(async () => await OpenFilePickerAsync());
             SaveWordCommmand = new DelegateCommand(async () => await SaveWord());
             GoBackCommand = new DelegateCommand(async () => await GoBack());
+            ValidateFormCommand = new DelegateCommand(ValidateForm);
             Title = "Dodaj nowe słowo";
         }
 
@@ -109,7 +131,7 @@ namespace ProjectIP.ViewModels
                         var stream = new MemoryStream(fileByte);
                         ImageStream = stream;
                         Image = ImageSource.FromStream(() => stream);
-
+                        ValidateForm();
                     }
                 }
             }
@@ -143,6 +165,11 @@ namespace ProjectIP.ViewModels
         private async Task GoBack()
         {
             await NavigationService.GoBackAsync();
+        }
+
+        private void ValidateForm()
+        {
+            IsFormValid = IsDescValid && IsPickerValid && !string.IsNullOrEmpty(FileName);
         }
     }
 }

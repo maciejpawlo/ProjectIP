@@ -66,6 +66,7 @@ namespace ProjectIP.ViewModels
         public DelegateCommand NavigateToRegisterCommand { get; set; }
         public DelegateCommand EmailTextChangedCommand { get; set; }
         public DelegateCommand PasswordTextChangedCommand { get; set; }
+        public DelegateCommand ValidateFormCommand { get; set; }
         #endregion
 
         #region Services
@@ -80,6 +81,7 @@ namespace ProjectIP.ViewModels
             _userDialogsService = userDialogsService;
             LoginCommand = new DelegateCommand(async () => await Login());
             NavigateToRegisterCommand = new DelegateCommand(async () => await NavigateToRegister());
+            ValidateFormCommand = new DelegateCommand(ValidateForm);
             EmailTextChangedCommand = new DelegateCommand(OnEmailTextChanged);
             PasswordTextChangedCommand = new DelegateCommand(OnPasswordTextChanged);
             IsEmailErrorVisible = false;
@@ -114,6 +116,13 @@ namespace ProjectIP.ViewModels
 
         private void OnPasswordTextChanged() //tu zmieniana jest widocznosc bledow zwiazanych z walidacja hasla
         {
+            IsPasswordErrorVisible = !IsValidPassword;
+            IsFormValid = IsValidEmail && IsValidPassword;
+        }
+
+        private void ValidateForm()
+        {
+            IsEmailErrorVisible = !IsValidEmail;
             IsPasswordErrorVisible = !IsValidPassword;
             IsFormValid = IsValidEmail && IsValidPassword;
         }

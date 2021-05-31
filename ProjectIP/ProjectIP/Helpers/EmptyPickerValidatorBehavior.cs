@@ -1,16 +1,15 @@
-﻿using Prism.Behaviors;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Prism.Behaviors;
 using Xamarin.Forms;
 
 namespace ProjectIP.Helpers
 {
-    class EmptyEntryValidatorBehavior : BehaviorBase<Entry>
+    class EmptyPickerValidatorBehavior : BehaviorBase<Picker>
     {
         public static readonly BindableProperty IsValidProperty =
             BindableProperty.Create(nameof(IsValid), typeof(bool), typeof(EmailValidationBehavior), false, BindingMode.OneWayToSource);
-
         public bool IsValid
         {
             get { return (bool)GetValue(IsValidProperty); }
@@ -20,17 +19,24 @@ namespace ProjectIP.Helpers
                 System.Diagnostics.Debug.WriteLine($"Is True being set to: {value} by the EmptyEntryValidatorBehavior");
             }
         }
-        protected override void OnAttachedTo(Entry bindable)
+        protected override void OnAttachedTo(Picker bindable)
         {
             base.OnAttachedTo(bindable);
-            AssociatedObject.TextChanged += OnTextChanged; //wire method to event
+            AssociatedObject.SelectedIndexChanged += OnSelectedIndexChanged; //wire method to event
         }
 
-        private void OnTextChanged(object sender, TextChangedEventArgs e) //validation here
+        private void OnSelectedIndexChanged(object sender, EventArgs e)
         {
-            var entry = sender as Entry;
-            IsValid = entry.IsPassword ? !string.IsNullOrEmpty(e.NewTextValue) : !string.IsNullOrWhiteSpace(e.NewTextValue);
-            entry.TextColor = IsValid ? Color.Default : Color.Red;
+            var picker = sender as Picker;
+            if (picker.SelectedItem == null)
+            {
+                IsValid = false;
+            }
+            else
+            {
+                IsValid = true;
+            }
+            picker.TextColor = IsValid ? Color.Default : Color.Red;
         }
     }
 }

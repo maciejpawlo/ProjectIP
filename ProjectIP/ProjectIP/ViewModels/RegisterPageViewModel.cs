@@ -105,12 +105,17 @@ namespace ProjectIP.ViewModels
         private void OnEmailTextChanged() //tu zmieniana jest widocznosc bledow zwiazanych z walidacja emaila
         {
             IsEmailErrorVisible = !IsValidEmail;
-            IsFormValid = IsValidEmail && IsValidPassword;
+            ValidateForm();
         }
 
         private void OnPasswordTextChanged() //tu zmieniana jest widocznosc bledow zwiazanych z walidacja hasla
         {
             IsPasswordErrorVisible = !IsValidPassword;
+            ValidateForm();
+        }
+
+        private void ValidateForm()
+        {
             IsFormValid = IsValidEmail && IsValidPassword;
         }
 
