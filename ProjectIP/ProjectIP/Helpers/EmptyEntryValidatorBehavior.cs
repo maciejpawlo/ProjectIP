@@ -26,7 +26,7 @@ namespace ProjectIP.Helpers
             AssociatedObject.TextChanged += OnTextChanged; //wire method to event
         }
 
-        private void OnTextChanged(object sender, TextChangedEventArgs e) //validation here
+        private void OnTextChanged(object sender, TextChangedEventArgs e) //validation
         {
             var entry = sender as Entry;
             IsValid = entry.IsPassword ? !string.IsNullOrEmpty(e.NewTextValue) : !string.IsNullOrWhiteSpace(e.NewTextValue);
