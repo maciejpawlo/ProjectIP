@@ -68,7 +68,7 @@
       <Version>121.0.1.1</Version>
     </PackageReference>
     <PackageReference Include="Xamarin.Firebase.Core">
-      <Version>119.0.0</Version>
+      <Version>121.1.1.1</Version>
     </PackageReference>
     <PackageReference Include="Xamarin.Forms" Version="5.0.0.2012" />
     <PackageReference Include="Xamarin.Essentials.Interfaces" Version="1.7.0" />
